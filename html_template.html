@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="x-apple-disable-message-reformatting"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Drivo | Weekly Survey &amp; Review Report</title>
+<style>
+        .positive { color: #16a34a; font-weight: bold; }
+        .negative { color: #dc2626; font-weight: bold; }
+        .nodescription { color: #ff9800; font-weight: bold; }
+        .neutral { color: #9ca3af; font-weight: bold; }
+        .percentage-good { color: #16a34a; font-weight: bold; }
+        .percentage-bad { color: #dc2626; font-weight: bold; }
+        .google-blue { color: #2563eb; font-weight: bold; }
+        .google-brand { color: #4285F4; font-weight: bold; }
+        .yelp-orange { color: #fb923c; font-weight: bold; }
+        .yelp-brand { color: #d71616; font-weight: bold; }
+        .trustpilot-gray { color: #64748b; font-weight: bold; }
+        .trustpilot-brand { color: #04da8d; font-weight: bold; }
+        .nps-positive { color: #16a34a; font-weight: bold; }
+        .nps-negative { color: #dc2626; font-weight: bold; }
+        .refund-amount { color: #dc2626; font-weight: bold; }
+        
+        .confirmed-case {
+        background-color: #fff8dc;
+        border-left: 4px solid #ffcc00;
+        padding: 5px 10px;
+        margin: 5px 0;
+        font-weight: bold;
+        }
+        
+        .chart-container { width: 100%; font-family: Arial, sans-serif; padding: 15px 0; }
+        .chart-title { font-size: 14px; font-weight: bold; margin-bottom: 15px; text-align: center; }
+        .chart-row { display: flex; align-items: center; margin-bottom: 8px; }
+        .chart-label { width: 130px; font-size: 12px; text-align: right; padding-right: 10px; }
+        .chart-bar-container { flex-grow: 1; height: 20px; background-color: #f0f0f0; border-radius: 4px; overflow: hidden; position: relative; }
+        .chart-bar { height: 100%; background-color: #5a67ff; border-radius: 4px; }
+        .chart-value { width: 40px; font-size: 12px; padding-left: 10px; font-weight: bold; }
+        
+        .grouped-chart-container { width: 100%; padding: 15px 0; }
+        .location-group { margin-bottom: 20px; }
+        .location-title { font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #111827; }
+        .category-row { display: flex; align-items: center; margin-bottom: 4px; }
+        .category-label { width: 190px; font-size: 11px; text-align: right; padding-right: 8px; white-space: normal; line-height: 1.2; word-break: break-word; }
+        .category-bar-container { flex-grow: 1; height: 16px; background-color: #f0f0f0; border-radius: 3px; overflow: hidden; position: relative; }
+        .category-bar { height: 100%; border-radius: 3px; }
+        .category-value { width: 35px; font-size: 11px; padding-left: 8px; font-weight: bold; }
+        
+        .upsellcomplaints-bar { background-color: #ef4444; }
+        .unexpectedfees-bar { background-color: #f97316; }
+        .vehicleconditions-bar { background-color: #f59e0b; }
+        .vehiclecleanlines-bar { background-color: #3b82f6; }
+        .longwait-bar { background-color: #06b6d4; }
+        .longshuttle-bar { background-color: #0ea5e9; }
+        .shuttleservice-bar { background-color: #84cc16; }
+        .locationcomplaint-bar { background-color: #6366f1; }
+        .geozone-bar { background-color: #22c55e; }
+        .damageclaims-bar { background-color: #f43f5e; }
+        .rudeservice-bar { background-color: #8b5cf6; }
+        .unhelpfulservice-bar { background-color: #a855f7; }
+        .reservedvehicleunavailable-bar { background-color: #ec4899; }
+        .callcentercomplaints-bar { background-color: #eab308; }
+        .depositissues-bar { background-color: #10b981; }
+        .insuranceverification-bar { background-color: #14b8a6; }
+        .tollsandviolations-bar { background-color: #d946ef; }
+        .othercomplaints-bar { background-color: #334155; } 
+        .noinformation-bar { background-color: #9ca3af; } 
+        
+/* ===== Report Editor UI ===== */
+#editor-toolbar{
+  position:sticky; top:0; z-index:9999;
+  background:#0f1a2a; color:#fff;
+  padding:10px 12px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  font-family:Arial,Helvetica,sans-serif;
+  border-bottom:4px solid #5a67ff;
+}
+#editor-toolbar .left, #editor-toolbar .right{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+#editor-toolbar button{
+  background:#ffffff; color:#0f1a2a;
+  border:0; padding:8px 10px; border-radius:10px;
+  font:700 12px Arial,Helvetica,sans-serif; cursor:pointer;
+}
+#editor-toolbar button.secondary{
+  background:rgba(255,255,255,.14); color:#fff;
+  border:1px solid rgba(255,255,255,.25);
+}
+#editor-toolbar .hint{ font:12px Arial,Helvetica,sans-serif; opacity:.85; }
+#editor-toolbar .sep{ width:1px; height:26px; background:rgba(255,255,255,.2); margin:0 4px; }
+
+body.edit-mode #reportRoot[contenteditable="true"] *:focus{ outline:2px dashed rgba(90,103,255,.6); outline-offset:2px; }
+.selected-row{ outline:2px solid #5a67ff !important; }
+.selected-li{ outline:2px solid #5a67ff !important; }
+
+#editor-toast{
+  position:fixed; bottom:14px; right:14px;
+  background:#111827; color:#fff;
+  padding:10px 12px; border-radius:12px;
+  font:12px Arial,Helvetica,sans-serif;
+  opacity:0; transform:translateY(10px);
+  transition:all .18s ease;
+  z-index:10000;
+}
+#editor-toast.show{ opacity:1; transform:translateY(0); }
+@media print{ #editor-toolbar, #editor-toast{ display:none !important; } }
+
+</style>
+</head>
+<body style="margin:0;padding:0;background:#f2f4f8;">
+
+<div id="editor-toolbar" contenteditable="false">
+  <div class="left">
+    <button id="toggle-edit" class="secondary" type="button">Edit: ON</button>
+    <span class="sep" aria-hidden="true"></span>
+    <button id="add-row" type="button">Add Row</button>
+    <button id="delete-row" type="button">Delete Row</button>
+    <button id="add-item" type="button">Add List Item</button>
+    <button id="delete-item" type="button">Delete List Item</button>
+    <span class="sep" aria-hidden="true"></span>
+    <button id="recalc" class="secondary" type="button">Recalculate Charts</button>
+    <span class="hint">Tip: click a table row or bullet to select it, then use the buttons.</span>
+  </div>
+  <div class="right">
+    <button id="download-static" type="button">Download Static HTML</button>
+  </div>
+</div>
+<div id="editor-toast" contenteditable="false"></div>
+
+<div id="reportRoot">
+<center style="width:100%;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+<tr>
+<td align="center" style="padding:24px 12px;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:1024px;background:#fff;border:1px solid #e6e9ee;border-radius:12px;overflow:hidden;" width="1024">
+<tr>
+<td style="background:#0f1a2a;color:#fff;padding:24px 28px;border-bottom:4px solid #5a67ff;">
+<div style="font:bold 13px Arial,Helvetica,sans-serif;opacity:.9;">Drivo | Weekly Survey &amp; Review Report</div>
+<div style="font:800 34px/1.25 'Segoe UI',Arial,Helvetica,sans-serif;margin-top:6px;">Week of {{ report_week_date_range }}</div>
+<div style="font:13px Arial,Helvetica,sans-serif;opacity:.8;margin-top:6px;">Prepared by: Parker Kuldashev • Sent: {{ sent_date }}</div>
+</td>
+</tr>
+<tr>
+<td style="padding:18px 22px;">
+<p style="margin:0 0 10px 0;font:13px Arial;color:#111827;">Hello Team, hope all is well.</p>
+<p style="margin:0 0 12px 0;font:13px Arial;color:#111827;">
+    Please see our results for the weekly survey report.<br/>
+    MTD Overall ratio of negative complaints towards closed RAs: <b>{{ mtd_overall_neg_complaints }} / {{ mtd_closed_ras }} = <span class="percentage-bad">{{ mtd_overall_ratio }}%</span></b>
+</p>
+<div style="font:700 13px Arial;color:#111827;margin:0 0 8px 0;">MTD Overall ratio of negative complaints towards closed RAs by <i>locations</i>:</div>
+<table border="0" cellpadding="10" cellspacing="0" role="presentation" style="font:13px Arial;border:1px solid #c9d5e7;border-radius:10px;background:#f9fbff;" width="100%">
+<tr style="background:#eaf2fb;font-weight:700;">
+<td>Location</td><td align="right">Overall Negative Complaints</td><td align="right">Overall Closed R/A's</td><td align="right">Percentage</td>
+</tr>
+<tr style="background:#ffffff;"><td><b>TOTAL</b></td><td align="right"><b>{{ mtd_overall_neg_complaints }}</b></td><td align="right"><b>{{ mtd_closed_ras }}</b></td><td align="right"><b><span class="percentage-bad">{{ mtd_overall_ratio }}%</span></b></td></tr>
+<tr><td>EWR</td><td align="right">{{ mtd_ewr_complaints }}</td><td align="right">{{ mtd_ewr_ras }}</td><td align="right"><b><span class="percentage-bad">{{ mtd_ewr_pct }}%</span></b></td></tr>
+<tr style="background:#f8fbff;"><td>JFK</td><td align="right">{{ mtd_jfk_complaints }}</td><td align="right">{{ mtd_jfk_ras }}</td><td align="right"><b><span class="percentage-bad">{{ mtd_jfk_pct }}%</span></b></td></tr>
+<tr><td>LGA</td><td align="right">{{ mtd_lga_complaints }}</td><td align="right">{{ mtd_lga_ras }}</td><td align="right"><b><span class="percentage-good">{{ mtd_lga_pct }}%</span></b></td></tr>
+<tr style="background:#f8fbff;"><td>BRK</td><td align="right">{{ mtd_brk_complaints }}</td><td align="right">{{ mtd_brk_ras }}</td><td align="right"><b><span class="percentage-good">{{ mtd_brk_pct }}%</span></b></td></tr>
+<tr><td>BRKJS</td><td align="right">{{ mtd_brkjs_complaints }}</td><td align="right">{{ mtd_brkjs_ras }}</td><td align="right"><b><span class="percentage-good">{{ mtd_brkjs_pct }}%</span></b></td></tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:8px 22px 0;">
+<div style="font:700 16px Arial;color:#111827;margin:0 0 10px 0;">WEEKLY SURVEY &amp; REVIEW METRICS</div>
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+<tr>
+<td style="width:50%;vertical-align:top;padding:10px 10px 10px 0;">
+<table role="presentation" style="border:1px solid #eef2f7;border-radius:12px;" width="100%">
+<tr><td style="padding:16px 16px 12px;">
+<div style="font:700 12px Arial;color:#6b7280;letter-spacing:.3px;">SURVEYS (TOTAL)</div>
+<div style="font:700 28px Arial;color:#111827;margin:6px 0 10px;">{{ surveys_total }}</div>
+<div style="font:700 12px Arial;color:#111827;margin-bottom:6px;">Sentiment mix</div>
+<div style="display:flex;align-items:center;gap:10px;margin:6px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ surveys_pos_pct }}%;background:#22c55e;"></span>
+</div>
+<div style="width:110px;font:12px Arial;color:#111827;"><span class="positive">{{ surveys_pos_count }}</span> ({{ surveys_pos_pct }}%)</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:6px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ surveys_neg_pct }}%;background:#dc2626;"></span>
+</div>
+<div style="width:110px;font:12px Arial;color:#111827;"><span class="negative">{{ surveys_neg_count }}</span> ({{ surveys_neg_pct }}%)</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:6px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ surveys_nodesc_pct }}%;background:#ff9800;"></span>
+</div>
+<div style="width:110px;font:12px Arial;color:#111827;"><span class="nodescription">{{ surveys_nodesc_count }}</span> ({{ surveys_nodesc_pct }}%)</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:6px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ surveys_neutral_pct }}%;background:#9ca3af;"></span>
+</div>
+<div style="width:110px;font:12px Arial;color:#111827;"><span class="neutral">{{ surveys_neutral_count }}</span> ({{ surveys_neutral_pct }}%)</div>
+</div>
+</td></tr>
+<tr>
+<td style="padding:16px 16px 12px;">
+<span style="display:inline-block;width:10px;height:10px;background:#22c55e;border-radius:2px;"></span> <span style="font:12px Arial;color:#111827;"> Positive</span>
+<span style="display:inline-block;width:10px;height:10px;background:#dc2626;border-radius:2px;"></span> <span style="font:12px Arial;color:#111827;"> Negative</span>
+<span style="display:inline-block;width:10px;height:10px;background:#ff9800;border-radius:2px;"></span> <span style="font:12px Arial;color:#111827;"> No Description</span>
+<span style="display:inline-block;width:10px;height:10px;background:#9ca3af;border-radius:2px;"></span> <span style="font:12px Arial;color:#111827;"> Neutral</span>
+</td>
+</tr>
+</table>
+</td>
+<td style="width:50%;vertical-align:top;padding:10px 0 10px 10px;">
+<table role="presentation" style="border:1px solid #eef2f7;border-radius:12px;" width="100%">
+<tr><td style="padding:16px 16px 12px;">
+<div style="font:700 12px Arial;color:#6b7280;letter-spacing:.3px;">REVIEWS (TOTAL)</div>
+<div style="font:700 28px Arial;color:#111827;margin:6px 0 10px;">{{ reviews_total }}</div>
+<div style="font:700 12px Arial;color:#111827;margin-bottom:6px;">Sentiment mix</div>
+<div style="display:flex;align-items:center;gap:10px;margin:6px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ reviews_pos_pct }}%;background:#22c55e;"></span>
+</div>
+<div style="width:110px;font:12px Arial;color:#111827;"><span class="positive">{{ reviews_pos_count }}</span> ({{ reviews_pos_pct }}%)</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:6px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ reviews_neg_pct }}%;background:#dc2626;"></span>
+</div>
+<div style="width:110px;font:12px Arial;color:#111827;"><span class="negative">{{ reviews_neg_count }}</span> ({{ reviews_neg_pct }}%)</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:6px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ reviews_nodesc_pct }}%;background:#ff9800;"></span>
+</div>
+<div style="width:110px;font:12px Arial;color:#111827;"><span class="nodescription">{{ reviews_nodesc_count }}</span> ({{ reviews_nodesc_pct }}%)</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:6px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ reviews_neutral_pct }}%;background:#9ca3af;"></span>
+</div>
+<div style="width:110px;font:12px Arial;color:#111827;"><span class="neutral">{{ reviews_neutral_count }}</span> ({{ reviews_neutral_pct }}%)</div>
+</div>
+</td></tr>
+<tr>
+<td style="padding:16px 16px 12px;">
+<span style="display:inline-block;width:10px;height:10px;background:#22c55e;border-radius:2px;"></span> <span style="font:12px Arial;color:#111827;"> Positive</span>
+<span style="display:inline-block;width:10px;height:10px;background:#dc2626;border-radius:2px;"></span> <span style="font:12px Arial;color:#111827;"> Negative</span>
+<span style="display:inline-block;width:10px;height:10px;background:#ff9800;border-radius:2px;"></span> <span style="font:12px Arial;color:#111827;"> No Description</span>
+<span style="display:inline-block;width:10px;height:10px;background:#9ca3af;border-radius:2px;"></span> <span style="font:12px Arial;color:#111827;"> Neutral</span>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="width:50%;vertical-align:top;padding:10px 10px 10px 0;">
+<table role="presentation" class="review-sources-card" style="border:1px solid #eef2f7;border-radius:12px;" width="100%">
+<tr><td style="padding:16px 16px 12px;">
+<div style="font:700 12px Arial;color:#6b7280;letter-spacing:.3px;">REVIEW SOURCES</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:6px 0 10px;">
+  <div style="font:700 12px Arial;color:#374151;" class="review-brand">DRIVO</div>
+  <div style="font:700 22px Arial;color:#111827;" class="review-total-line"><span class="review-total">{{ drivo_reviews_total }}</span> <span style="font:700 12px Arial;color:#6b7280;">reviews</span></div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:8px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ drivo_google_pct }}%;background:#4285F4;"></span>
+</div>
+<div style="width:120px;font:12px Arial;"><span class="google-brand">{{ drivo_google_count }}</span> ({{ drivo_google_pct }}%)</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:8px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ drivo_yelp_pct }}%;background:#d71616;"></span>
+</div>
+<div style="width:120px;font:12px Arial;"><span class="yelp-brand">{{ drivo_yelp_count }}</span> ({{ drivo_yelp_pct }}%)</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:8px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ drivo_trustpilot_pct }}%;background:#04da8d;"></span>
+</div>
+<div style="width:120px;font:12px Arial;"><span class="trustpilot-brand">{{ drivo_trustpilot_count }}</span> ({{ drivo_trustpilot_pct }}%)</div>
+</div>
+</td></tr>
+</table>
+</td>
+<td style="width:50%;vertical-align:top;padding:10px 0 10px 10px;">
+<table role="presentation" class="review-sources-card" style="border:1px solid #eef2f7;border-radius:12px;" width="100%">
+<tr><td style="padding:16px 16px 12px;">
+<div style="font:700 12px Arial;color:#6b7280;letter-spacing:.3px;">REVIEW SOURCES</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:6px 0 10px;">
+  <div style="font:700 12px Arial;color:#374151;" class="review-brand">ACE</div>
+  <div style="font:700 22px Arial;color:#111827;" class="review-total-line"><span class="review-total">{{ ace_reviews_total }}</span> <span style="font:700 12px Arial;color:#6b7280;">reviews</span></div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:8px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ ace_google_pct }}%;background:#4285F4;"></span>
+</div>
+<div style="width:120px;font:12px Arial;"><span class="google-brand">{{ ace_google_count }}</span> ({{ ace_google_pct }}%)</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:8px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ ace_yelp_pct }}%;background:#d71616;"></span>
+</div>
+<div style="width:120px;font:12px Arial;"><span class="yelp-brand">{{ ace_yelp_count }}</span> ({{ ace_yelp_pct }}%)</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin:8px 0;">
+<div style="flex:1;height:10px;background:#eef2f7;border-radius:20px;overflow:hidden;">
+<span style="display:block;height:10px;width:{{ ace_trustpilot_pct }}%;background:#04da8d;"></span>
+</div>
+<div style="width:120px;font:12px Arial;"><span class="trustpilot-brand">{{ ace_trustpilot_count }}</span> ({{ ace_trustpilot_pct }}%)</div>
+</div>
+</td></tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:12px 22px 0;">
+<div style="font:700 16px Arial;color:#111827;margin:0 0 10px 0;">WEEKLY COMPLAINTS SUMMARY</div>
+<table cellpadding="0" cellspacing="0" role="presentation" width="100%">
+<tr>
+<td style="vertical-align:top;width:50%;padding-right:12px;">
+<div style="font:700 13px Arial;color:#111827;margin:6px 0;">Call Center Complaints:</div>
+<table border="0" cellpadding="8" cellspacing="0" role="presentation" style="font:12px Arial;border:2px solid #94a3b8;border-radius:8px;text-align:center;" width="100%">
+<tr style="background:#d7e6f7;font-weight:700;"><td>JFK</td><td>EWR</td><td>BRK</td><td>BRKJS</td><td>LGA</td><td>TOTAL</td></tr>
+<tr><td>{{ cc_jfk }}</td><td>{{ cc_ewr }}</td><td>{{ cc_brk }}</td><td>{{ cc_brkjs }}</td><td>{{ cc_lga }}</td><td><b><span class="negative">{{ cc_total }}</span></b></td></tr>
+</table>
+</td>
+<td style="vertical-align:top;width:50%;padding-left:12px;">
+<table role="presentation" style="border:1px solid #eef2f7;border-radius:10px;" width="100%">
+<tr><td style="padding:12px 14px;">
+<div style="font:700 14px Arial;color:#111827;margin-bottom:6px;">Confirmed Cases</div>
+<ul style="margin:0 0 0 18px;padding:0;font:13px Arial;color:#111827;line-height:1.55;">
+{% for case in confirmed_cases %}
+<li class="confirmed-case"><b>{{ case.id }}</b> — {{ case.description }}</li>
+{% endfor %}
+</ul>
+</td></tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:14px 22px 8px;">
+<div style="font:700 16px Arial;color:#111827;margin:0 0 10px 0;">WEEKLY COMPLAINTS BY LOCATION AND CATEGORY</div>
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border:2px solid #2da1ff;border-radius:8px;font-family: Arial;" width="100%">
+<tr>
+<td style="padding:20px;">
+<div class="grouped-chart-container">
+<div class="chart-title">Complaints Breakdown by Location and Category - Week of {{ report_week_date_range }}</div>
+
+{% for loc in location_chart_data %}
+<div class="location-group">
+    <div class="location-title">{{ loc.name }} ({{ loc.total_complaints }} total complaints)</div>
+    
+    {% for cat in loc.categories %}
+    <div class="category-row">
+        <div class="category-label">{{ cat.name }}</div>
+        <div class="category-bar-container">
+            <div class="category-bar {{ cat.css_class }}" style="width: {{ cat.percentage }}%;"></div>
+        </div>
+        <div class="category-value">{{ cat.count }}</div>
+    </div>
+    {% endfor %}
+
+</div>
+{% endfor %}
+
+</div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:8px 22px 10px;">
+<div style="font:700 16px Arial;color:#111827;margin:0 0 10px 0;">WEEKLY COMPLAINTS BY LOCATION</div>
+<table cellpadding="0" cellspacing="0" role="presentation" width="100%">
+
+{% for loc in narrative_lists %}
+<tr><td style="font:700 13px Arial;margin:10px 0 6px;">{{ loc.negative_surveys }} negative surveys + {{ loc.cc_feedback }} call center feedback for <b>{{ loc.name }}</b> ({{ loc.total_complaints }} complaints):</td></tr>
+<tr><td>
+<ul style="margin:0 0 12px 18px;padding:0;font:13px Arial;line-height:1.55;color:#374151;">
+    {% for bullet in loc.bullets %}
+    <li><b><span class="negative">{{ bullet.count }}</span> {{ bullet.title }}:</b> {{ bullet.description }}</li>
+    {% endfor %}
+</ul>
+</td></tr>
+{% endfor %}
+
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:10px 22px;">
+<div style="font:700 16px Arial;color:#111827;margin:0 0 10px 0;">WEEKLY VS MONTH TO DATE BREAKDOWN</div>
+<table border="0" cellpadding="10" cellspacing="0" role="presentation" style="border:2px solid #94a3b8;border-radius:10px;" width="100%">
+<tr><td style="font:12px Arial;color:#111827;">
+    The percentage breakdown by complaint type: <b>total weekly complaints: <span class="negative">{{ weekly_total_complaints }}</span></b> | <b>total MTD ({{ mtd_date_range }}): <span class="negative">{{ mtd_total_complaints }}</span></b>
+</td></tr>
+<tr>
+<td>
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+<tr>
+<td style="width:50%;vertical-align:top;padding-right:10px;">
+<div style="font:700 14px Arial;color:#111827;margin:0 0 8px;text-align:center;background:#eaf2fb;padding:5px;border-radius:5px;">WEEKLY BREAKDOWN</div>
+<table border="0" cellpadding="6" cellspacing="0" role="presentation" style="font:12px Arial;border:1px solid #c9d5e7;border-radius:8px;" width="100%">
+<tr style="background:#eaf2fb;font-weight:700;"><td>Category</td><td align="right">Cases</td><td align="right">% Total</td><td align="right">% R/A's</td></tr>
+
+{% for row in weekly_breakdown_rows %}
+<tr style="background:{{ loop.cycle('#ffffff', '#f8fbff') }};"><td>{{ row.category }}</td><td align="right"><span class="negative">{{ row.cases }}</span></td><td align="right">{{ row.pct_total }}%</td><td align="right"><b><span class="negative">{{ row.pct_ra }}%</span></b></td></tr>
+{% endfor %}
+
+<tr style="background:#dde8f6;"><td><b>Total</b></td><td align="right"><b><span class="negative">{{ weekly_total_complaints }}</span></b></td><td></td><td></td></tr>
+<tr style="background:#dde8f6;"><td><b>Closed R/A's</b></td><td align="right"><b>{{ weekly_closed_ras }}</b></td><td></td><td></td></tr>
+</table>
+</td>
+<td style="width:50%;vertical-align:top;padding-left:10px;">
+<div style="font:700 14px Arial;color:#111827;margin:0 0 8px;text-align:center;background:#eaf2fb;padding:5px;border-radius:5px;">MONTH TO DATE BREAKDOWN</div>
+<table border="0" cellpadding="6" cellspacing="0" role="presentation" style="font:12px Arial;border:1px solid #c9d5e7;border-radius:8px;" width="100%">
+<tr style="background:#eaf2fb;font-weight:700;"><td>Category</td><td align="right">Cases</td><td align="right">% Total</td><td align="right">% R/A's</td></tr>
+
+{% for row in mtd_breakdown_rows %}
+<tr style="background:{{ loop.cycle('#ffffff', '#f8fbff') }};"><td>{{ row.category }}</td><td align="right"><span class="negative">{{ row.cases }}</span></td><td align="right">{{ row.pct_total }}%</td><td align="right"><b><span class="negative">{{ row.pct_ra }}%</span></b></td></tr>
+{% endfor %}
+
+<tr style="background:#dde8f6;"><td><b>Total</b></td><td align="right"><b><span class="negative">{{ mtd_total_complaints }}</span></b></td><td></td><td></td></tr>
+<tr style="background:#dde8f6;"><td><b>Closed R/A's</b></td><td align="right"><b>{{ mtd_closed_ras }}</b></td><td></td><td></td></tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+<tr>
+<td style="width:50%;vertical-align:top;padding-right:10px;">
+<div style="font:700 14px Arial;color:#111827;margin:10px 0 5px;text-align:center;background:#eaf2fb;padding:5px;border-radius:5px;">WEEKLY RATIOS</div>
+<table border="1" cellpadding="6" cellspacing="0" role="presentation" style="font:12px Arial;border-color:#9fb5cc;" width="100%">
+<tr style="background:#eaf2fb;font-weight:700;"><td colspan="3">{{ weekly_date_range }}</td></tr>
+<tr><td>Survey and CC complaints only</td><td align="right">Closed R/A's</td><td align="right">Ratio</td></tr>
+<tr><td><span class="negative">{{ weekly_survey_cc_only }}</span></td><td align="right">{{ weekly_closed_ras }}</td><td align="right"><b><span class="percentage-good">{{ weekly_ratio_survey_cc }}%</span></b></td></tr>
+</table>
+<table border="1" cellpadding="6" cellspacing="0" role="presentation" style="font:12px Arial;border-color:#9fb5cc;margin-top:10px;" width="100%">
+<tr style="background:#eaf2fb;font-weight:700;"><td colspan="3">{{ weekly_date_range }}</td></tr>
+<tr><td>Surveys + CC Complaints</td><td align="right">Closed R/A's</td><td align="right">Ratio</td></tr>
+<tr><td><span class="negative">{{ weekly_all_complaints }}</span></td><td align="right">{{ weekly_closed_ras }}</td><td align="right"><b><span class="negative">{{ weekly_ratio_all }}%</span></b></td></tr>
+</table>
+</td>
+<td style="width:50%;vertical-align:top;padding-left:10px;">
+<div style="font:700 14px Arial;color:#111827;margin:10px 0 5px;text-align:center;background:#eaf2fb;padding:5px;border-radius:5px;">MONTH TO DATE RATIOS</div>
+<table border="1" cellpadding="6" cellspacing="0" role="presentation" style="font:12px Arial;border-color:#9fb5cc;" width="100%">
+<tr style="background:#eaf2fb;font-weight:700;"><td colspan="3">{{ mtd_date_range }}</td></tr>
+<tr><td>Survey and CC complaints only</td><td align="right">Closed R/A's</td><td align="right">Ratio</td></tr>
+<tr><td><span class="negative">{{ mtd_survey_cc_only }}</span></td><td align="right">{{ mtd_closed_ras }}</td><td align="right"><b><span class="negative">{{ mtd_ratio_survey_cc }}%</span></b></td></tr>
+</table>
+<table border="1" cellpadding="6" cellspacing="0" role="presentation" style="font:12px Arial;border-color:#9fb5cc;margin-top:10px;" width="100%">
+<tr style="background:#eaf2fb;font-weight:700;"><td colspan="3">{{ mtd_date_range }}</td></tr>
+<tr><td>Surveys + CC Complaints</td><td align="right">Closed R/A's</td><td align="right">Ratio</td></tr>
+<tr><td><span class="negative">{{ mtd_all_complaints }}</span></td><td align="right">{{ mtd_closed_ras }}</td><td align="right"><b><span class="percentage-bad">{{ mtd_ratio_all }}%</span></b></td></tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:10px 22px;">
+<div style="font:700 16px Arial;color:#111827;margin:0 0 10px 0;">EMAIL SURVEY METRICS</div>
+<table border="1" cellpadding="12" cellspacing="0" role="presentation" style="border-color:#a7c2df;" width="100%">
+<tr>
+<td>
+<div style="font:700 13px Arial;margin-bottom:6px;">Overall requests sent {{ weekly_date_range }}:</div>
+<table border="0" cellpadding="8" cellspacing="0" role="presentation" style="font:12px Arial;border:1px solid #c9d5e7;border-radius:8px;" width="100%">
+<tr style="background:#eaf2fb;font-weight:700;">
+<td align="center">Location</td>
+<td align="center">Requests / Total</td>
+<td align="center">Percentage</td>
+</tr>
+<tr style="background:#f8fbff;">
+<td align="center"><b>TOTAL</b></td>
+<td align="center"><b>{{ email_total_sent }} / {{ email_total_target }}</b></td>
+<td align="center"><b>{{ email_total_pct }}%</b></td>
+</tr>
+{% for loc in email_survey_locations %}
+<tr style="background:{{ loop.cycle('#ffffff', '#f8fbff') }};">
+<td align="center"><b>{{ loc.name }}</b></td>
+<td align="center">{{ loc.sent }} / {{ loc.target }}</td>
+<td align="center">{{ loc.pct }}%</td>
+</tr>
+{% endfor %}
+</table>
+<div style="font:700 13px Arial;margin:12px 0 6px;">Dates {{ weekly_date_range }}:</div>
+<div style="font:700 13px Arial;margin-bottom:6px;">Email Survey Weekly Stats and Completion Ratio</div>
+<table cellpadding="0" cellspacing="0" role="presentation" width="100%">
+    <tr>
+        <!-- LEFT COLUMN: WEEKLY (50% Width) -->
+        <td style="vertical-align:top; width:50%; padding-right:10px;">
+            <h4 style="margin: 0 0 10px 0; font-family: Arial; color: #333333;">WEEKLY</h4>
+            <ul style="margin:0 0 8px 18px; padding:0; font:13px Arial;">
+                {% for row in survey_metrics %}
+                <li style="margin-bottom: 6px;">
+                    <b>{{ row.name }}:</b> 
+                    <span style="color:#16a34a;">{{ row.weekly.pos }}</span> / 
+                    <span style="color:#dc2626;">{{ row.weekly.neg }}</span> / 
+                    <span style="color:#dc2626;">{{ row.weekly.neutral }}</span> 
+                    ({{ row.weekly.sent }} / {{ row.weekly.target }} = {{ row.weekly.pct }}%)
+                </li>
+                {% endfor %}
+            </ul>
+        </td>
+
+        <!-- RIGHT COLUMN: MONTH-TO-DATE (50% Width) -->
+        <td style="vertical-align:top; width:50%; padding-left:10px;">
+            <h4 style="margin: 0 0 10px 0; font-family: Arial; color: #333333;">MONTH TO DATE</h4>
+            <ul style="margin:0 0 8px 18px; padding:0; font:13px Arial;">
+                {% for row in survey_metrics %}
+                <li style="margin-bottom: 6px;">
+                    <b>{{ row.name }}:</b> 
+                    <span style="color:#16a34a;">{{ row.mtd.pos }}</span> / 
+                    <span style="color:#dc2626;">{{ row.mtd.neg }}</span> / 
+                    <span style="color:#dc2626;">{{ row.mtd.neutral }}</span> 
+                    ({{ row.mtd.sent }} / {{ row.mtd.target }} = {{ row.mtd.pct }}%)
+                </li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+</table>
+<hr style="border:none; border-top:1px solid #d8dee9; margin:15px 0;"/>
+<hr style="border:none;border-top:1px solid #d8dee9;margin:10px 0;"/>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:10px 22px;">
+<div style="font:700 16px Arial;color:#111827;margin:0 0 10px 0;">WEEKLY REVIEW METRICS</div>
+<table border="1" cellpadding="12" cellspacing="0" role="presentation" style="border-color:#a7c2df;" width="100%">
+<tr>
+<td>
+<div style="font:700 13px Arial;margin:6px 0;color:#111827;">Drivo / Ace <u>Google</u> reviews last week:</div>
+<table cellpadding="4" cellspacing="0" role="presentation" style="font:13px Arial;" width="100%">
+<tr>
+<td style="width:50%;vertical-align:top;">
+<div style="font:700 12px Arial;color:#374151;margin-bottom:4px;">WEEKLY</div>
+    {% for row in google_weekly_reviews %}
+    {{ row.name }}: <span class="positive">{{ row.d_pos }}</span> - <span class="negative">{{ row.d_neg }}</span> {% if row.a_pos %} / <span class="positive">{{ row.a_pos }}</span> - <span class="negative">{{ row.a_neg }}</span> {% endif %}<br/>
+    {% endfor %}
+</td>
+<td style="width:50%;vertical-align:top;">
+<div style="font:700 12px Arial;color:#374151;margin-bottom:4px;">MONTH TO DATE</div>
+    {% for row in google_mtd_reviews %}
+    <b>{{ row.name }}:</b> <span class="positive">{{ row.d_pos }}</span> - <span class="negative">{{ row.d_neg }}</span> {% if row.a_pos %} / <span class="positive">{{ row.a_pos }}</span> - <span class="negative">{{ row.a_neg }}</span> {% endif %}<br/>
+    {% endfor %}
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:10px 22px;">
+<table border="1" cellpadding="12" cellspacing="0" role="presentation" style="border-color:#a7c2df;" width="100%">
+<tr>
+<td>
+<div style="font:700 13px Arial;margin-bottom:6px;color:#111827;">Drivo / Ace <u>Yelp</u> reviews last week:   <span style="color:#6b7280">{{ mtd_date_range }}</span></div>
+<table cellpadding="4" cellspacing="0" role="presentation" style="font:13px Arial;" width="100%">
+<tr>
+<td style="width:50%;vertical-align:top;">
+    {% for row in yelp_weekly_reviews %}
+    • <b>{{ row.name }}:</b> <span class="positive">{{ row.d_pos }}</span> (<b>{{ row.d_nr }} NR</b>) - <span class="negative">{{ row.d_neg }}</span> {% if row.has_ace %} / <span class="positive">{{ row.a_pos }}</span> (<b>{{ row.a_nr }} NR</b>) - <span class="negative">{{ row.a_neg }}</span> {% endif %}<br/>
+    {% endfor %}
+</td>
+<td style="width:50%;vertical-align:top;">
+    {% for row in yelp_mtd_reviews %}
+    <b>{{ row.name }}:</b> <span class="positive">{{ row.d_pos }}</span> (<b>{{ row.d_nr }} NR</b>) - <span class="negative">{{ row.d_neg }}</span> {% if row.has_ace %} / <span class="positive">{{ row.a_pos }}</span> (<b>{{ row.a_nr }} NR</b>) - <span class="negative">{{ row.a_neg }}</span> {% endif %}<br/>
+    {% endfor %}
+</td>
+</tr>
+</table>
+<div style="font:700 13px Arial;margin:14px 0 6px;color:#111827;">Drivo <u>BBB</u> reviews last week:   <span style="color:#6b7280"></span></div>
+<div style="font:13px Arial;color:#374151;">
+    {% for row in bbb_reviews_weekly %}
+    {{ row.name }}: <span class="neutral">{{ row.pos }}</span> - <span class="neutral">{{ row.neg }}</span> {% if not loop.last %} • {% endif %}
+    {% endfor %}
+</div>
+<div style="font:700 13px Arial;margin:14px 0 6px;color:#111827;">Drivo <u>BBB</u> reviews MTD:   <span style="color:#6b7280"></span></div>
+<div style="font:13px Arial;color:#374151;">
+    {% for row in bbb_reviews_mtd %}
+    {{ row.name }}: <span class="neutral">{{ row.pos }}</span> - <span class="neutral">{{ row.neg }}</span> {% if not loop.last %} • {% endif %}
+    {% endfor %}
+</div>
+<hr style="border:none;border-top:1px solid #d8dee9;margin:12px 0;"/>
+<div style="font:700 13px Arial;margin:6px 0;color:#111827;">Email Survey NPS Score</div>
+<table cellpadding="4" cellspacing="0" role="presentation" style="font:13px Arial;" width="100%">
+<tr>
+<td style="width:50%;vertical-align:top;padding-right:10px;border-right:1px solid #e0e0e0;">
+<div style="font:700 12px Arial;color:#374151;margin-bottom:4px;">WEEKLY</div>
+<div style="font:13px Arial;margin:2px 0;">Last Week: <b><span class="{% if nps_weekly_total >= 0 %}nps-positive{% else %}nps-negative{% endif %}">{{ nps_weekly_total }}</span></b></div>
+<div style="font:13px Arial;margin-top:6px;">
+    {% for row in nps_weekly_locations %}
+    {{ row.name }}: <span class="{% if row.score >= 0 %}nps-positive{% else %}nps-negative{% endif %}">{{ row.score }}</span><br/>
+    {% endfor %}
+</div>
+</td>
+<td style="width:50%;vertical-align:top;padding-left:10px;">
+<div style="font:700 12px Arial;color:#374151;margin-bottom:4px;">MONTH TO DATE</div>
+<div style="font:13px Arial;margin:2px 0;">{{ mtd_date_range }}: <b><span class="{% if nps_mtd_total >= 0 %}nps-positive{% else %}nps-negative{% endif %}">{{ nps_mtd_total }}</span></b></div>
+<div style="font:13px Arial;margin-top:6px;">
+    {% for row in nps_mtd_locations %}
+    {{ row.name }}: <span class="{% if row.score >= 0 %}nps-positive{% else %}nps-negative{% endif %}">{{ row.score }}</span><br/>
+    {% endfor %}
+</div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:10px 22px 20px;">
+<div style="font:700 16px Arial;color:#111827;margin:0 0 10px 0;">WEEKLY REFUNDS</div>
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e6e9ee;border-radius:10px;" width="100%">
+<tr><td style="padding:12px 14px;font:700 13px Arial;color:#111827;">Total refunded for the last week: <b><span class="refund-amount">{{ total_refunds }}</span></b></td></tr>
+<tr><td style="padding:0 14px 14px;">
+<table border="1" cellpadding="6" cellspacing="0" role="presentation" style="border-color:#d1d9e6;font:12px Arial;" width="100%">
+<tr style="background:#eef2f7;font-weight:700;">
+<td>Res#</td><td>Loc</td><td>Month</td><td>Date</td><td>Amount</td><td>By</td><td>Dept</td><td>Notes</td>
+</tr>
+{% for refund in refunds_list %}
+<tr style="background:{{ loop.cycle('#ffffff', '#f8fbff') }};">
+    <td>{{ refund.res }}</td>
+    <td>{{ refund.loc }}</td>
+    <td>{{ refund.month }}</td>
+    <td>{{ refund.date }}</td>
+    <td><span class="refund-amount">{{ refund.amount }}</span></td>
+    <td>{{ refund.agent }}</td>
+    <td>{{ refund.dept }}</td>
+    <td>{{ refund.notes }}</td>
+</tr>
+{% endfor %}
+</table>
+</td></tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="background:#f7f9fc;padding:16px 22px;border-top:1px solid #e6e9ee;color:#6b7280;font:12px Arial;">
+    Prepared by Parker Kuldashev • Weekly Survey &amp; Review Report
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</center>
+</div>
+
+<script id="editor-script">
+(function(){
+  const reportRoot = document.getElementById('reportRoot');
+  const toastEl = document.getElementById('editor-toast');
+
+  let editMode = true;
+  let selectedRow = null;
+  let selectedLi = null;
+
+  function toast(msg){
+    if(!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastEl._t);
+    toastEl._t = setTimeout(()=>toastEl.classList.remove('show'), 1700);
+  }
+
+  function clearSelection(){
+    if(selectedRow){ selectedRow.classList.remove('selected-row'); }
+    if(selectedLi){ selectedLi.classList.remove('selected-li'); }
+    selectedRow = null;
+    selectedLi = null;
+  }
+
+  function setSelectedRow(tr){
+    if(selectedRow){ selectedRow.classList.remove('selected-row'); }
+    selectedRow = tr;
+    if(selectedRow){ selectedRow.classList.add('selected-row'); }
+  }
+
+  function setSelectedLi(li){
+    if(selectedLi){ selectedLi.classList.remove('selected-li'); }
+    selectedLi = li;
+    if(selectedLi){ selectedLi.classList.add('selected-li'); }
+  }
+
+  function setEditMode(on){
+    editMode = !!on;
+    document.body.classList.toggle('edit-mode', editMode);
+    if(reportRoot){
+      reportRoot.contentEditable = editMode ? 'true' : 'false';
+      reportRoot.setAttribute('spellcheck', 'false');
+    }
+    
+    // Lock purely-visual bar elements so editing doesn't accidentally break charts
+    if(reportRoot){
+      const lock = reportRoot.querySelectorAll(
+        '.category-bar, .category-bar-container, .chart-bar, .chart-bar-container'
+      );
+      lock.forEach(el => el.setAttribute('contenteditable','false'));
+      // sentiment progress bars are built with overflow-hidden containers
+      reportRoot.querySelectorAll('div[style*="overflow:hidden"]').forEach(el=>{
+        el.setAttribute('contenteditable','false');
+      });
+    }
+const tgl = document.getElementById('toggle-edit');
+    if(tgl) tgl.textContent = editMode ? 'Edit: ON' : 'Edit: OFF';
+    toast(editMode ? 'Edit mode enabled' : 'Edit mode disabled');
+  }
+
+  // --- Charts ---
+  function toNumber(txt){
+    if(txt == null) return 0;
+    const s = String(txt).replace(/,/g,'').trim();
+    const m = s.match(/-?\d+(\.\d+)?/);
+    return m ? Number(m[0]) : 0;
+  }
+
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+  function recalcGroupedComplaints(){
+    const groups = reportRoot ? reportRoot.querySelectorAll('.location-group') : [];
+    groups.forEach(group=>{
+      const rows = group.querySelectorAll('.category-row');
+      const values = [];
+      rows.forEach(r=>{
+        const valEl = r.querySelector('.category-value');
+        const v = toNumber(valEl ? valEl.textContent : 0);
+        values.push(v);
+      });
+      const max = values.length ? Math.max(...values) : 0;
+      const total = values.reduce((a,b)=>a+b,0);
+
+      // Update title "(xx total complaints)" based on sum of values
+      const titleEl = group.querySelector('.location-title');
+      if(titleEl){
+        const t = titleEl.textContent || '';
+        const locMatch = t.match(/^([A-Za-z0-9\/\-\s]+?)\s*\(/);
+        const loc = locMatch ? locMatch[1].trim() : null;
+        if(loc){
+          titleEl.textContent = `${loc} (${total} total complaints)`;
+        }
+      }
+
+      // Update bar widths relative to the max value in the location group
+      rows.forEach((r, i)=>{
+        const bar = r.querySelector('.category-bar');
+        const v = values[i] || 0;
+        const w = max > 0 ? (v / max) * 100 : 0;
+        if(bar) bar.style.width = `${clamp(w, 0, 100).toFixed(0)}%`;
+      });
+    });
+  }
+
+  function recalcSentimentCards(){
+    if(!reportRoot) return;
+    const markers = Array.from(reportRoot.querySelectorAll('div'))
+      .filter(d => (d.textContent || '').trim().toLowerCase() === 'sentiment mix');
+
+    markers.forEach(marker=>{
+      const container = marker.closest('td') || marker.parentElement;
+      if(!container) return;
+
+      // Find total number (big 28px number) inside the same card
+      let totalEl = null;
+      const divs = Array.from(container.querySelectorAll('div'));
+      for(const d of divs){
+        const txt = (d.textContent || '').trim();
+        if(!/^\d+$/.test(txt)) continue;
+        const st = (d.getAttribute('style') || '');
+        if(st.includes('28px')){
+          totalEl = d;
+          break;
+        }
+      }
+      const total = totalEl ? toNumber(totalEl.textContent) : 0;
+
+      // Find rows that look like sentiment rows: flex row + bar span + right info block
+      const rows = Array.from(container.querySelectorAll('div'))
+        .filter(d=>{
+          const st = (d.getAttribute('style') || '').toLowerCase().replace(/\s/g,'');
+          if(!(st.includes('display:flex') && st.includes('gap:10px'))) return false;
+          const hasBar = !!d.querySelector('div[style*="overflow:hidden"] span');
+          const hasInfo = !!d.querySelector('div[style*="width:110px"]');
+          return hasBar && hasInfo;
+        });
+
+      rows.forEach(row=>{
+        const barSpan = row.querySelector('div[style*="overflow:hidden"] span');
+        const infoDiv = row.querySelector('div[style*="width:110px"]');
+        if(!infoDiv || !barSpan) return;
+
+        const countSpan = infoDiv.querySelector('span');
+        if(!countSpan) return;
+
+        const currentCount = toNumber(countSpan.textContent);
+        const pm = (infoDiv.textContent || '').match(/(\d+(\.\d+)?)%/);
+        const currentPercent = pm ? Number(pm[1]) : null;
+
+        const prevCount = row.dataset.lastCount ? Number(row.dataset.lastCount) : null;
+        const prevPercent = row.dataset.lastPercent ? Number(row.dataset.lastPercent) : null;
+
+        let source = 'count';
+        if(prevCount !== null && prevPercent !== null){
+          const countChanged = Math.abs(currentCount - prevCount) > 0.0001;
+          const percentChanged = currentPercent !== null && Math.abs(currentPercent - prevPercent) > 0.0001;
+          if(percentChanged && !countChanged) source = 'percent';
+          else source = 'count';
+        }
+
+        let nextCount = currentCount;
+        let nextPercent = currentPercent;
+
+        if(source === 'percent' && currentPercent !== null){
+          nextPercent = clamp(currentPercent, 0, 100);
+          nextCount = total > 0 ? Math.round((nextPercent * total) / 100) : 0;
+        } else {
+          nextCount = currentCount;
+          nextPercent = total > 0 ? (nextCount / total) * 100 : 0;
+        }
+
+        // Write back
+        const cls = countSpan.className || '';
+        infoDiv.innerHTML = `<span class="${cls}">${nextCount}</span> (${clamp(nextPercent,0,100).toFixed(2)}%)`;
+        barSpan.style.width = `${clamp(nextPercent,0,100).toFixed(2)}%`;
+
+        row.dataset.lastCount = String(nextCount);
+        row.dataset.lastPercent = String(Number(clamp(nextPercent,0,100).toFixed(2)));
+      });
+    });
+  }
+
+  
+  function recalcReviewSourceCards(){
+    if(!reportRoot) return;
+    const cards = Array.from(reportRoot.querySelectorAll('table.review-sources-card'));
+    cards.forEach(card=>{
+      const totalEl = card.querySelector('.review-total');
+      const total = totalEl ? toNumber(totalEl.textContent) : 0;
+
+      const rows = Array.from(card.querySelectorAll('div')).filter(row=>{
+        const st = (row.getAttribute('style') || '');
+        if(!st.includes('display:flex')) return false;
+        const barContainer = row.querySelector('div[style*="overflow:hidden"]');
+        const infoDiv = row.querySelector('div[style*="width:120px"]') || row.querySelector('div[style*="width:110px"]') || row.querySelector('div:last-child');
+        if(!barContainer || !infoDiv) return false;
+        const countSpan = infoDiv.querySelector('span');
+        if(!countSpan) return false;
+        // must look like: "123 (45.67%)"
+        return /\(\s*[\d.]+\s*%\s*\)/.test(infoDiv.textContent || '');
+      });
+
+      rows.forEach(row=>{
+        const barContainer = row.querySelector('div[style*="overflow:hidden"]');
+        let barSpan = barContainer ? barContainer.querySelector('span') : null;
+
+        const infoDiv = row.querySelector('div[style*="width:120px"]') || row.querySelector('div[style*="width:110px"]') || row.querySelector('div:last-child');
+        if(!infoDiv) return;
+        const countSpan = infoDiv.querySelector('span');
+        if(!countSpan) return;
+
+        const currentCount = toNumber(countSpan.textContent);
+        const pctMatch = (infoDiv.textContent || '').match(/\(([\d.]+)\s*%\s*\)/);
+        const currentPercent = pctMatch ? Number(pctMatch[1]) : (total > 0 ? (currentCount / total) * 100 : 0);
+
+        const lastCount = row.dataset.lastCount ? toNumber(row.dataset.lastCount) : currentCount;
+        const lastPercent = row.dataset.lastPercent ? Number(row.dataset.lastPercent) : currentPercent;
+
+        const countChanged = currentCount !== lastCount;
+        const percentChanged = Math.abs(currentPercent - lastPercent) > 0.01;
+
+        let nextCount, nextPercent;
+        if(percentChanged && !countChanged){
+          nextPercent = currentPercent;
+          nextCount = total > 0 ? Math.round((nextPercent / 100) * total) : 0;
+        } else {
+          nextCount = currentCount;
+          nextPercent = total > 0 ? (nextCount / total) * 100 : 0;
+        }
+
+        // Write back (keeps the count span class for styling)
+        const cls = countSpan.className || '';
+        infoDiv.innerHTML = `<span class="${cls}">${nextCount}</span> (${clamp(nextPercent,0,100).toFixed(2)}%)`;
+
+        // Ensure bar exists and update width
+        if(barContainer){
+          if(!barSpan){
+            barSpan = document.createElement('span');
+            barSpan.style.display = 'block';
+            barSpan.style.height = '10px';
+
+            const cn = (cls || '').toLowerCase();
+            let bg = '#64748b';
+            if(cn.includes('google')) bg = '#4285F4';
+            else if(cn.includes('yelp')) bg = '#d71616';
+            else if(cn.includes('trustpilot')) bg = '#04da8d';
+            barSpan.style.background = bg;
+
+            barContainer.appendChild(barSpan);
+          }
+          barSpan.style.width = `${clamp(nextPercent,0,100).toFixed(2)}%`;
+        }
+
+        row.dataset.lastCount = String(nextCount);
+        row.dataset.lastPercent = String(Number(clamp(nextPercent,0,100).toFixed(2)));
+      });
+    });
+  }
+
+function recalcAllCharts(){
+    recalcGroupedComplaints();
+    recalcSentimentCards();
+    recalcReviewSourceCards();
+  }
+
+  // --- Add/remove helpers ---
+  function addListItem(){
+    if(!selectedLi){
+      toast('Select a list item first.');
+      return;
+    }
+    const ul = selectedLi.parentElement;
+    if(!ul || !/^(UL|OL)$/i.test(ul.tagName)){
+      toast('Selection is not inside a list.');
+      return;
+    }
+    const newLi = selectedLi.cloneNode(true);
+    newLi.classList.remove('selected-li');
+    // Clear content but keep basic structure
+    newLi.innerHTML = 'New item';
+    ul.insertBefore(newLi, selectedLi.nextSibling);
+    setSelectedLi(newLi);
+    toast('List item added.');
+  }
+
+  function deleteListItem(){
+    if(!selectedLi){
+      toast('Select a list item first.');
+      return;
+    }
+    const ul = selectedLi.parentElement;
+    if(!ul || !/^(UL|OL)$/i.test(ul.tagName)){
+      toast('Selection is not inside a list.');
+      return;
+    }
+    const next = selectedLi.nextElementSibling || selectedLi.previousElementSibling;
+    selectedLi.remove();
+    setSelectedLi(next && next.tagName === 'LI' ? next : null);
+    toast('List item deleted.');
+    recalcAllCharts();
+  }
+
+  function isHeaderRow(tr){
+    if(!tr) return true;
+    if(tr.querySelector('th')) return true;
+    const st = (tr.getAttribute('style') || '').toLowerCase();
+    // common header row patterns in the report
+    if(st.includes('font-weight:700')) return true;
+    const t = (tr.textContent || '').toLowerCase();
+    if(t.includes('location') && t.includes('percentage')) return true;
+    if(t.includes('category') && t.includes('cases')) return true;
+    return false;
+  }
+
+  function addTableRow(){
+    if(!selectedRow){
+      toast('Select a table row first.');
+      return;
+    }
+    const table = selectedRow.closest('table');
+    if(!table){
+      toast('Selection is not inside a table.');
+      return;
+    }
+    // Avoid adding rows to the outer layout tables
+    const outer = table.closest('table');
+    // We'll still allow it, but prefer to operate inside tables that have borders/headers.
+    const newTr = selectedRow.cloneNode(true);
+    newTr.classList.remove('selected-row');
+
+    // Clear cells (keep spans if any)
+    const cells = Array.from(newTr.children).filter(c=>/^(TD|TH)$/i.test(c.tagName));
+    cells.forEach(c=>{
+      if(c.querySelector('th')) return;
+      const span = c.querySelector('span');
+      if(span){
+        span.textContent = '0';
+      } else {
+        c.textContent = '';
+      }
+    });
+
+    selectedRow.parentNode.insertBefore(newTr, selectedRow.nextSibling);
+    setSelectedRow(newTr);
+    toast('Row added.');
+    recalcAllCharts();
+  }
+
+  function deleteTableRow(){
+    if(!selectedRow){
+      toast('Select a table row first.');
+      return;
+    }
+    if(isHeaderRow(selectedRow)){
+      toast('Header rows cannot be deleted.');
+      return;
+    }
+    const next = selectedRow.nextElementSibling || selectedRow.previousElementSibling;
+    selectedRow.remove();
+    setSelectedRow(next && next.tagName === 'TR' ? next : null);
+    toast('Row deleted.');
+    recalcAllCharts();
+  }
+
+  // --- Static export ---
+  function downloadStatic(){
+    recalcAllCharts();
+
+    const clone = document.documentElement.cloneNode(true);
+
+    // Remove editor UI + script + toast
+    const tb = clone.querySelector('#editor-toolbar');
+    if(tb) tb.remove();
+    const ts = clone.querySelector('#editor-toast');
+    if(ts) ts.remove();
+    const sc = clone.querySelector('#editor-script');
+    if(sc) sc.remove();
+
+    // Turn off edit mode + remove selection classes
+    clone.querySelectorAll('[contenteditable]').forEach(el=>{
+      el.removeAttribute('contenteditable');
+    });
+    clone.querySelectorAll('.selected-row').forEach(el=>el.classList.remove('selected-row'));
+    clone.querySelectorAll('.selected-li').forEach(el=>el.classList.remove('selected-li'));
+    clone.querySelectorAll('body').forEach(el=>el.classList.remove('edit-mode'));
+
+    // Optional: strip editor CSS by removing the last injected block (we keep it minimal by leaving it; but remove if present)
+    // We'll remove any style blocks that contain "Report Editor UI"
+    clone.querySelectorAll('style').forEach(st=>{
+      if((st.textContent || '').includes('Report Editor UI')){
+        st.textContent = st.textContent.replace(/\/\* ===== Report Editor UI =====[\s\S]*$/m,'');
+      }
+    });
+
+    const doctype = '<!DOCTYPE html>\n';
+    const html = doctype + clone.outerHTML;
+
+    const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    const a = document.createElement('a');
+    const headerTitle = document.querySelector('title') ? document.querySelector('title').textContent.trim() : 'report';
+    const safeName = (headerTitle || 'report').replace(/[^\w\-]+/g,'_').slice(0,60);
+    a.download = safeName + '_static.html';
+    a.href = URL.createObjectURL(blob);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+    toast('Static HTML downloaded.');
+  }
+
+  // --- Wiring ---
+  if(reportRoot){
+    reportRoot.addEventListener('click', (e)=>{
+      const li = e.target.closest('li');
+      const tr = e.target.closest('tr');
+
+      // ignore clicks outside the report
+      if(!reportRoot.contains(e.target)) return;
+
+      if(li){
+        if(selectedRow) setSelectedRow(null);
+        setSelectedLi(li);
+        return;
+      }
+      if(tr){
+        if(selectedLi) setSelectedLi(null);
+        setSelectedRow(tr);
+        return;
+      }
+    });
+
+    let debounceT = null;
+    reportRoot.addEventListener('input', ()=>{
+      clearTimeout(debounceT);
+      debounceT = setTimeout(recalcAllCharts, 150);
+    });
+  }
+
+  const btn = (id)=>document.getElementById(id);
+  if(btn('toggle-edit')) btn('toggle-edit').addEventListener('click', ()=>setEditMode(!editMode));
+  if(btn('recalc')) btn('recalc').addEventListener('click', ()=>{ recalcAllCharts(); toast('Charts recalculated.'); });
+  if(btn('add-item')) btn('add-item').addEventListener('click', addListItem);
+  if(btn('delete-item')) btn('delete-item').addEventListener('click', deleteListItem);
+  if(btn('add-row')) btn('add-row').addEventListener('click', addTableRow);
+  if(btn('delete-row')) btn('delete-row').addEventListener('click', deleteTableRow);
+  if(btn('download-static')) btn('download-static').addEventListener('click', downloadStatic);
+
+  // Init
+  setEditMode(true);
+  recalcAllCharts();
+})();
+</script>
+
+</body>
+</html>
