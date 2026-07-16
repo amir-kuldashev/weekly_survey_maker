@@ -1,6 +1,6 @@
-from context import context
+from .context import context
 import pandas as pd
-from const import locations
+from .const import locations
 
 def count_controllable_complaints(file):
     

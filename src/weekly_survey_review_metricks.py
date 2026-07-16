@@ -1,4 +1,4 @@
-from context import context
+from .context import context
 review_sources = ["GOOGLE","YELP","TRUSTPILOT"]
 
 def create_surveys(weekly_file):
@@ -53,7 +53,7 @@ def cc_complains(weekly_file):
 
 def confirmed_cases(weekly_file):
     weekly_file_non_duplicate = weekly_file[weekly_file["Duplicate?"]=="No"]
-    confirmed_file = weekly_file_non_duplicate[weekly_file_non_duplicate["Confirmed"] == "Y"]
+    confirmed_file = weekly_file_non_duplicate[weekly_file_non_duplicate["Confirmed "] == "Y"]
 
     confirmed_cases_list =[]
     

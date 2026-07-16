@@ -1,5 +1,5 @@
-from context import context
-from const import locations
+from .context import context
+from .const import locations
 
 def count_BBB(reviews):
     bbb_reviews = []

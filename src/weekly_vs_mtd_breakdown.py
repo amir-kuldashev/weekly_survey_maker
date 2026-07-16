@@ -1,5 +1,5 @@
-from context import context
-from const import ALL_COMPLAINTS
+from .context import context
+from .const import ALL_COMPLAINTS
 
 # range can either be mtd or weekly
 def count_total_complaints(complaints, range):
@@ -21,9 +21,9 @@ def count_total_complaints(complaints, range):
 
 def weekly_vs_mtd_breakdown(weekly_complaints_file, monthly_complaints_file, weekly_RA_file):
     
-    weekly_survey_cc = weekly_complaints_file[(weekly_complaints_file["Source"]=="Drivo Survey") | (weekly_complaints_file["Source"]=="Call Center ")]
+    weekly_survey_cc = weekly_complaints_file[(weekly_complaints_file["Source"]=="Drivo Survey") | (weekly_complaints_file["Source"]=="Call Center")]
     weekly_non_duplicate = weekly_survey_cc[weekly_survey_cc["Duplicate?"]=="No"]
-    monthly_survey_cc = monthly_complaints_file[(monthly_complaints_file["Source"]=="Drivo Survey") | (monthly_complaints_file["Source"]=="Call Center ")]
+    monthly_survey_cc = monthly_complaints_file[(monthly_complaints_file["Source"]=="Drivo Survey") | (monthly_complaints_file["Source"]=="Call Center")]
     monthly_non_duplicate = monthly_survey_cc[monthly_survey_cc["Duplicate?"]=="No"]
     
     context["weekly_total_complaints"] = (weekly_non_duplicate[ALL_COMPLAINTS]== "Yes").sum().sum()

@@ -1,4 +1,4 @@
-from context import context
+from .context import context
 def calculate_ratios(complaints, range): 
     complaints_surveys_cc = complaints[(complaints["Source"] == "Call Center") | (complaints["Source"] == "Drivo Survey")]
     non_duplicate = complaints_surveys_cc[complaints_surveys_cc["Duplicate?"]=="No"]

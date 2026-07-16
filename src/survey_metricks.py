@@ -1,5 +1,5 @@
-from const import locations
-from context import context
+from .const import locations
+from .context import context
 
 def calculate_survey_metricks(weekly_complaints, monthly_complaints, weekly_RA,monthly_RA):
     weekly_surveys = weekly_complaints[weekly_complaints["Source"] == "Drivo Survey"]
@@ -58,7 +58,7 @@ def calculate_survey_metricks(weekly_complaints, monthly_complaints, weekly_RA,m
                 "neutral": loc_monthly_count.get(3,0), 
                 "sent": surveys_monthly_loc_count.get(loc,0), 
                 "target": RA_monthly_loc_count.get(loc,0), 
-                "pct": round(surveys_monthly_loc_count.get(loc,0)/RA_monthly_loc_count.get(loc,0),2)
+                "pct": round(surveys_monthly_loc_count.get(loc,0)/RA_monthly_loc_count.get(loc,0)*100,2)
             }
         }
         survey_metrics.append(location)

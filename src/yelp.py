@@ -1,5 +1,5 @@
-from context import context
-from const import locations
+from .context import context
+from .const import locations
 
 def count_yelp():
     default_yelp = []

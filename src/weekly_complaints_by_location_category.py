@@ -1,5 +1,5 @@
-from context import context
-from const import locations, ALL_COMPLAINTS, BULLET_CATEGORIES,CATEGORY_STYLES
+from .context import context
+from .const import locations, ALL_COMPLAINTS, BULLET_CATEGORIES,CATEGORY_STYLES
 
 def count_category_by_location(weekly_data):
     weekly_data_non_duplicate = weekly_data[weekly_data["Duplicate?"] == "No"]
