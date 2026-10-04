@@ -1,4 +1,4 @@
-from .const import locations
+from .const import locations, safe_pct
 from .context import context
 
 def calculate_survey_metricks(weekly_complaints, monthly_complaints, weekly_RA,monthly_RA):
@@ -9,7 +9,7 @@ def calculate_survey_metricks(weekly_complaints, monthly_complaints, weekly_RA,m
     
     context["email_total_sent"] = len(weekly_non_duplicate)
     context["email_total_target"] = len(weekly_RA)
-    context["email_total_pct"] = round(context["email_total_sent"]/context["email_total_target"]*100,2)
+    context["email_total_pct"] = safe_pct(context["email_total_sent"], context["email_total_target"])
     
     surveys_weekly_loc_count = weekly_non_duplicate["Location"].value_counts()
     surveys_monthly_loc_count = monthly_non_duplicate["Location"].value_counts()
@@ -25,7 +25,7 @@ def calculate_survey_metricks(weekly_complaints, monthly_complaints, weekly_RA,m
                "target": RA_weekly_loc_count.get(loc,0), 
                "pct": -1}
 
-        row["pct"] = round(row["sent"]/row["target"]*100,2)
+        row["pct"] = safe_pct(row["sent"], row["target"])
         
         email_survey_locations.append(row)
 
@@ -50,7 +50,7 @@ def calculate_survey_metricks(weekly_complaints, monthly_complaints, weekly_RA,m
                 "neutral": loc_weekly_count.get(3,0), 
                 "sent": surveys_weekly_loc_count.get(loc,0), 
                 "target": RA_weekly_loc_count.get(loc,0), 
-                "pct": round(surveys_weekly_loc_count.get(loc,0)/RA_weekly_loc_count.get(loc,0)*100,2)
+                "pct": safe_pct(surveys_weekly_loc_count.get(loc,0), RA_weekly_loc_count.get(loc,0))
             },
             "mtd": {
                 "pos": loc_monthly_count.get(5,0)+loc_monthly_count.get(4,0), 
@@ -58,7 +58,7 @@ def calculate_survey_metricks(weekly_complaints, monthly_complaints, weekly_RA,m
                 "neutral": loc_monthly_count.get(3,0), 
                 "sent": surveys_monthly_loc_count.get(loc,0), 
                 "target": RA_monthly_loc_count.get(loc,0), 
-                "pct": round(surveys_monthly_loc_count.get(loc,0)/RA_monthly_loc_count.get(loc,0)*100,2)
+                "pct": safe_pct(surveys_monthly_loc_count.get(loc,0), RA_monthly_loc_count.get(loc,0))
             }
         }
         survey_metrics.append(location)

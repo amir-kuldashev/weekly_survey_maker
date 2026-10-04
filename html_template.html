@@ -155,10 +155,11 @@ body.edit-mode #reportRoot[contenteditable="true"] *:focus{ outline:2px dashed r
 </tr>
 <tr style="background:#ffffff;"><td><b>TOTAL</b></td><td align="right"><b>{{ mtd_overall_neg_complaints }}</b></td><td align="right"><b>{{ mtd_closed_ras }}</b></td><td align="right"><b><span class="{% if mtd_overall_ratio > 8 %}percentage-bad{% elif mtd_overall_ratio > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_overall_ratio }}%</span></b></td></tr>
 <tr><td>EWR</td><td align="right">{{ mtd_ewr_complaints }}</td><td align="right">{{ mtd_ewr_ras }}</td><td align="right"><b><span class="{% if mtd_ewr_pct > 8 %}percentage-bad{% elif mtd_ewr_pct > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_ewr_pct }}%</span></b></td></tr>
-<tr style="background:#f8fbff;"><td>JFK</td><td align="right">{{ mtd_jfk_complaints }}</td><td align="right">{{ mtd_jfk_ras }}</td><td align="right"><b><span class="{% if mtd_jfk_pct > 8 %}percentage-bad{% elif mtd_jfk_pct > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_jfk_pct }}%</span></b></td></tr>
-<tr><td>LGA</td><td align="right">{{ mtd_lga_complaints }}</td><td align="right">{{ mtd_lga_ras }}</td><td align="right"><b><span class="{% if mtd_lga_pct > 8 %}percentage-bad{% elif mtd_lga_pct > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_lga_pct }}%</span></b></td></tr>
-<tr style="background:#f8fbff;"><td>BRK</td><td align="right">{{ mtd_brk_complaints }}</td><td align="right">{{ mtd_brk_ras }}</td><td align="right"><b><span class="{% if mtd_brk_pct > 8 %}percentage-bad{% elif mtd_brk_pct > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_brk_pct }}%</span></b></td></tr>
-<tr><td>BRKJS</td><td align="right">{{ mtd_brkjs_complaints }}</td><td align="right">{{ mtd_brkjs_ras }}</td><td align="right"><b><span class="{% if mtd_brkjs_pct > 8 %}percentage-bad{% elif mtd_brkjs_pct > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_brkjs_pct }}%</span></b></td></tr>
+<tr style="background:#f8fbff;"><td>EWRCON</td><td align="right">{{ mtd_ewrcon_complaints }}</td><td align="right">{{ mtd_ewrcon_ras }}</td><td align="right"><b><span class="{% if mtd_ewrcon_pct > 8 %}percentage-bad{% elif mtd_ewrcon_pct > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_ewrcon_pct }}%</span></b></td></tr>
+<tr><td>JFK</td><td align="right">{{ mtd_jfk_complaints }}</td><td align="right">{{ mtd_jfk_ras }}</td><td align="right"><b><span class="{% if mtd_jfk_pct > 8 %}percentage-bad{% elif mtd_jfk_pct > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_jfk_pct }}%</span></b></td></tr>
+<tr style="background:#f8fbff;"><td>LGA</td><td align="right">{{ mtd_lga_complaints }}</td><td align="right">{{ mtd_lga_ras }}</td><td align="right"><b><span class="{% if mtd_lga_pct > 8 %}percentage-bad{% elif mtd_lga_pct > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_lga_pct }}%</span></b></td></tr>
+<tr><td>BRK</td><td align="right">{{ mtd_brk_complaints }}</td><td align="right">{{ mtd_brk_ras }}</td><td align="right"><b><span class="{% if mtd_brk_pct > 8 %}percentage-bad{% elif mtd_brk_pct > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_brk_pct }}%</span></b></td></tr>
+<tr style="background:#f8fbff;"><td>BRKJS</td><td align="right">{{ mtd_brkjs_complaints }}</td><td align="right">{{ mtd_brkjs_ras }}</td><td align="right"><b><span class="{% if mtd_brkjs_pct > 8 %}percentage-bad{% elif mtd_brkjs_pct > 6 %}percentage-warn{% else %}percentage-good{% endif %}">{{ mtd_brkjs_pct }}%</span></b></td></tr>
 </table>
 </td>
 </tr>
@@ -321,8 +322,8 @@ body.edit-mode #reportRoot[contenteditable="true"] *:focus{ outline:2px dashed r
 <td style="vertical-align:top;width:50%;padding-right:12px;">
 <div style="font:700 13px Arial;color:#111827;margin:6px 0;">Call Center Complaints:</div>
 <table border="0" cellpadding="8" cellspacing="0" role="presentation" style="font:12px Arial;border:2px solid #94a3b8;border-radius:8px;text-align:center;" width="100%">
-<tr style="background:#d7e6f7;font-weight:700;"><td>JFK</td><td>EWR</td><td>BRK</td><td>BRKJS</td><td>LGA</td><td>TOTAL</td></tr>
-<tr><td>{{ cc_jfk }}</td><td>{{ cc_ewr }}</td><td>{{ cc_brk }}</td><td>{{ cc_brkjs }}</td><td>{{ cc_lga }}</td><td><b><span class="negative">{{ cc_total }}</span></b></td></tr>
+<tr style="background:#d7e6f7;font-weight:700;"><td>JFK</td><td>EWR</td><td>EWRCON</td><td>BRK</td><td>BRKJS</td><td>LGA</td><td>TOTAL</td></tr>
+<tr><td>{{ cc_jfk }}</td><td>{{ cc_ewr }}</td><td>{{ cc_ewrcon }}</td><td>{{ cc_brk }}</td><td>{{ cc_brkjs }}</td><td>{{ cc_lga }}</td><td><b><span class="negative">{{ cc_total }}</span></b></td></tr>
 </table>
 </td>
 <td style="vertical-align:top;width:50%;padding-left:12px;">

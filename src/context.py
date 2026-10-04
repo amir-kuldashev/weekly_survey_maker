@@ -11,6 +11,10 @@ context = {
     "mtd_ewr_complaints": -1,
     "mtd_ewr_ras": -1,
     "mtd_ewr_pct": -1,
+
+    "mtd_ewrcon_complaints": -1,
+    "mtd_ewrcon_ras": -1,
+    "mtd_ewrcon_pct": -1,
     
     "mtd_jfk_complaints": -1,
     "mtd_jfk_ras": -1,
@@ -62,6 +66,7 @@ context = {
     # --- Call Center Complaints ---
     "cc_jfk": -1,
     "cc_ewr": -1,
+    "cc_ewrcon": -1,
     "cc_brk": -1,
     "cc_brkjs": -1,
     "cc_lga": -1,

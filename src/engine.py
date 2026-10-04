@@ -24,25 +24,30 @@ from .yelp import create_yelp
 from .bbb import create_BBB
 from .nps import create_nps
 from .refunds import create_refunds
+from .const import normalize_location
 
 def generate_full_report(db_file, ra_file, refunds_path,start, end, int_month, output_path=None):
     complaints_file = pd.read_excel(db_file)
     RA_file = pd.read_excel(ra_file)
     refunds_file = pd.read_excel(refunds_path)
-    start_of_week = start
-    # end of week should be +1 day
-    end_of_week = end
+    # Normalize location codes (strip/upper) so they match the codes in const.locations.
+    complaints_file["Location"] = complaints_file["Location"].map(normalize_location)
+    RA_file["Pickup Location"] = RA_file["Pickup Location"].map(normalize_location)
+    # Excel exports sometimes store dates as text; make sure both date columns
+    # are real datetimes so the .dt accessor and range filters work.
+    complaints_file["Date of Complaint"] = pd.to_datetime(complaints_file["Date of Complaint"], errors="coerce")
+    RA_file["Drop Off Date"] = pd.to_datetime(RA_file["Drop Off Date"], errors="coerce")
     month = int_month
-    
-    weekly_complaints_file = complaints_file[(complaints_file['Date of Complaint'] >= start_of_week) & (complaints_file['Date of Complaint'] <= end_of_week)]
-    monthly_complaints_file = complaints_file[complaints_file["Date of Complaint"].dt.month == month]
-    
-    
-    start_dt = pd.to_datetime(start_of_week)
-    end_dt = pd.to_datetime(end_of_week)
+
+    start_dt = pd.to_datetime(start)
+    end_dt = pd.to_datetime(end)
     sent_dt = end_dt + pd.Timedelta(days=2)
-    
-    weekly_RA_file = RA_file[(RA_file['Drop Off Date'] >= start_of_week) & (RA_file['Drop Off Date'] <= end_dt+pd.Timedelta(days=1))]
+
+    weekly_complaints_file = complaints_file[(complaints_file['Date of Complaint'] >= start_dt) & (complaints_file['Date of Complaint'] <= end_dt)]
+    monthly_complaints_file = complaints_file[complaints_file["Date of Complaint"].dt.month == month]
+
+    # end of week should be +1 day for the R/A file
+    weekly_RA_file = RA_file[(RA_file['Drop Off Date'] >= start_dt) & (RA_file['Drop Off Date'] <= end_dt+pd.Timedelta(days=1))]
     print(len(weekly_RA_file))
     monthly_RA_file = RA_file[RA_file['Drop Off Date'].dt.month == month]
     print(len(monthly_RA_file))

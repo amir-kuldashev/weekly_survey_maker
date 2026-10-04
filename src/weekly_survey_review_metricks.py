@@ -1,4 +1,5 @@
 from .context import context
+from .const import locations
 review_sources = ["GOOGLE","YELP","TRUSTPILOT"]
 
 def create_surveys(weekly_file):
@@ -45,7 +46,6 @@ def create_reviews(weekly_file):
 def cc_complains(weekly_file):
     call_center_file = weekly_file[weekly_file["Source"] == "Call Center"]
     call_center_count = call_center_file["Location"].value_counts()
-    locations = ["EWR", "JFK", "LGA", "BRK", "BRKJS"]
 
     context["cc_total"] = call_center_count.sum()
     for loc in locations:

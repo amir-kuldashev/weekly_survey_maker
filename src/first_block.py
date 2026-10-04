@@ -1,6 +1,6 @@
 from .context import context
 import pandas as pd
-from .const import locations
+from .const import locations, safe_pct
 
 def count_controllable_complaints(file):
     
@@ -35,9 +35,9 @@ def count_monthly_RA(file):
 
 
 def count_monthly_pct():
-    context["mtd_overall_ratio"] = round(context["mtd_overall_neg_complaints"]/context["mtd_closed_ras"]*100,2)
+    context["mtd_overall_ratio"] = safe_pct(context["mtd_overall_neg_complaints"], context["mtd_closed_ras"])
     for loc in locations:
-        context[f"mtd_{loc.lower()}_pct"] = round(context[f"mtd_{loc.lower()}_complaints"]/context[f"mtd_{loc.lower()}_ras"]*100,2)
+        context[f"mtd_{loc.lower()}_pct"] = safe_pct(context[f"mtd_{loc.lower()}_complaints"], context[f"mtd_{loc.lower()}_ras"])
 
 def create_first_block(complaints_file, RA_file):
     count_controllable_complaints(complaints_file)
