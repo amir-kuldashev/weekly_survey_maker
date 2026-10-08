@@ -2,6 +2,15 @@ from .context import context
 import pandas as pd
 from .const import locations, safe_pct
 
+def count_by_brand(data, complaint_columns):
+    """Split a complaint count into Drivo / Ace using the CS database Brand column."""
+    brand = data["Brand"].astype(str).str.strip().str.upper()
+    return {
+        "drivo": int((data.loc[brand == "DRIVO", complaint_columns] == "Yes").sum().sum()),
+        "ace": int((data.loc[brand == "ACE", complaint_columns] == "Yes").sum().sum()),
+    }
+
+
 def count_controllable_complaints(file):
     
     controllable_complains = ['Reserved Vehicle Unavailable',
@@ -12,6 +21,7 @@ def count_controllable_complaints(file):
     non_duplicate_data = file[file['Duplicate?'] == 'No']
     mtd_overall_neg_complaints = (non_duplicate_data[controllable_complains] == 'Yes').sum().sum()
     context["mtd_overall_neg_complaints"] = mtd_overall_neg_complaints
+    context["mtd_overall_neg_by_brand"] = count_by_brand(non_duplicate_data, controllable_complains)
     
     for loc in locations:
         loc_data = non_duplicate_data[non_duplicate_data["Location"] == loc]

@@ -1,5 +1,22 @@
 from .context import context
-from .const import locations, ALL_COMPLAINTS, BULLET_CATEGORIES,CATEGORY_STYLES
+from .const import locations, ALL_COMPLAINTS, BULLET_CATEGORIES, CATEGORY_STYLES, safe_pct
+
+# Bullet categories whose text states how many cases were confirmed.
+CONFIRMED_BULLETS = ["Upsell complaints", "Rude service"]
+
+
+def confirmed_text(loc_data, complaint):
+    """How many of a location's complaints in this category were confirmed
+    (CS database column "Confirmed " == "Y"), as report text."""
+    confirmed_col = next((c for c in loc_data.columns if c.strip().lower() == "confirmed"), None)
+    if confirmed_col is None:
+        return "No confirmed cases"
+    confirmed = loc_data[confirmed_col].astype(str).str.strip().str.upper() == "Y"
+    count = int(((loc_data[complaint] == "Yes") & confirmed).sum())
+    if count == 0:
+        return "No confirmed cases"
+    return f"{count} confirmed case" + ("" if count == 1 else "s")
+
 
 def count_category_by_location(weekly_data):
     weekly_data_non_duplicate = weekly_data[weekly_data["Duplicate?"] == "No"]
@@ -37,10 +54,13 @@ def count_category_by_location(weekly_data):
             category_count = (loc_data[complaint] == "Yes").sum()
             if category_count == 0:
                 continue
-            category = {"name": complaint, "css_class": CATEGORY_STYLES.get(complaint, "othercomplaints-bar"), "percentage": category_count/total_complaints*100, "count": category_count}
+            category = {"name": complaint, "css_class": CATEGORY_STYLES.get(complaint, "othercomplaints-bar"), "percentage": safe_pct(category_count, total_complaints), "count": category_count}
             location["categories"].append(category)
             if complaint in BULLET_CATEGORIES:
-                bullet = {"count": category_count, "title": complaint, "description": ''}
+                description = ''
+                if complaint in CONFIRMED_BULLETS:
+                    description = confirmed_text(loc_data, complaint)
+                bullet = {"count": category_count, "title": complaint, "description": description}
                 narrative_location["bullets"].append(bullet)
                
         

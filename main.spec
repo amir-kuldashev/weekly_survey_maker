@@ -8,7 +8,7 @@ a = Analysis(
     binaries=[],
     # Bundle the Jinja template at the root of the app so resource_path()
     # (which reads from sys._MEIPASS when frozen) can find it.
-    datas=[('html_template.html', '.')],
+    datas=[('html_template_dashboard.html', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

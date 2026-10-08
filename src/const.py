@@ -76,3 +76,46 @@ BULLET_CATEGORIES = [
     "Reserved Vehicle Unavailable",
     "Shuttle Service"
 ]
+
+
+def parse_complaint_dates(series, report_start, report_end):
+    """Parse the CS database "Date of Complaint" column into real datetimes.
+
+    The sheet stores the date as text without a year (e.g. "1-Sep", "28-Sep").
+    pandas parses that as year 0001, so a 2026 weekly range never matches and
+    every weekly number comes out as 0. Real datetimes pass through untouched;
+    year-less values get the report year. A report week that crosses New Year
+    (Dec -> Jan) assigns January dates to the end year.
+    """
+    import pandas as pd
+
+    report_start = pd.Timestamp(report_start)
+    report_end = pd.Timestamp(report_end)
+
+    def _parse_one(value):
+        if pd.isna(value):
+            return pd.NaT
+        if isinstance(value, pd.Timestamp):
+            return value
+        text = str(value).strip()
+        parsed = pd.NaT
+        for fmt in ("%d-%b-%Y", "%d-%b", "%d-%B", "%b-%d", "%B-%d", "%m/%d/%Y", "%m/%d", "%Y-%m-%d"):
+            try:
+                parsed = pd.to_datetime(text, format=fmt)
+                break
+            except (ValueError, TypeError):
+                continue
+        if parsed is pd.NaT:
+            parsed = pd.to_datetime(text, errors="coerce")
+        if parsed is pd.NaT or pd.isna(parsed):
+            return pd.NaT
+        # strptime without %Y yields 1900, pandas' fallback parser yields 0001;
+        # either way a year before 2000 means the sheet gave no year at all.
+        if parsed.year >= 2000:
+            return parsed
+        year = report_start.year
+        if report_end.year != report_start.year and parsed.month <= report_end.month:
+            year = report_end.year
+        return parsed.replace(year=year)
+
+    return series.map(_parse_one)

@@ -24,23 +24,30 @@ from .yelp import create_yelp
 from .bbb import create_BBB
 from .nps import create_nps
 from .refunds import create_refunds
-from .const import normalize_location
+from .ai_specs import apply_ai_specifications
+from .const import normalize_location, parse_complaint_dates
 
-def generate_full_report(db_file, ra_file, refunds_path,start, end, int_month, output_path=None):
+# Report styles the GUI can pick from: label -> Jinja template file at the project root.
+TEMPLATES = {
+    "Dashboard": "html_template_dashboard.html",
+}
+
+
+def generate_full_report(db_file, ra_file, refunds_path,start, end, int_month, output_path=None, template_name="html_template_dashboard.html", gemini_api_key=None):
     complaints_file = pd.read_excel(db_file)
     RA_file = pd.read_excel(ra_file)
     refunds_file = pd.read_excel(refunds_path)
     # Normalize location codes (strip/upper) so they match the codes in const.locations.
     complaints_file["Location"] = complaints_file["Location"].map(normalize_location)
     RA_file["Pickup Location"] = RA_file["Pickup Location"].map(normalize_location)
-    # Excel exports sometimes store dates as text; make sure both date columns
-    # are real datetimes so the .dt accessor and range filters work.
-    complaints_file["Date of Complaint"] = pd.to_datetime(complaints_file["Date of Complaint"], errors="coerce")
-    RA_file["Drop Off Date"] = pd.to_datetime(RA_file["Drop Off Date"], errors="coerce")
     month = int_month
 
     start_dt = pd.to_datetime(start)
     end_dt = pd.to_datetime(end)
+    # The CS database stores "Date of Complaint" as text without a year ("28-Sep");
+    # attach the report year so the weekly range filter below actually matches.
+    complaints_file["Date of Complaint"] = parse_complaint_dates(complaints_file["Date of Complaint"], start_dt, end_dt)
+    RA_file["Drop Off Date"] = pd.to_datetime(RA_file["Drop Off Date"], errors="coerce")
     sent_dt = end_dt + pd.Timedelta(days=2)
 
     weekly_complaints_file = complaints_file[(complaints_file['Date of Complaint'] >= start_dt) & (complaints_file['Date of Complaint'] <= end_dt)]
@@ -67,6 +74,7 @@ def generate_full_report(db_file, ra_file, refunds_path,start, end, int_month, o
         create_first_block(monthly_complaints_file,monthly_RA_file)
         create_weekly_survey_review__metrciks(weekly_complaints_file)
         count_category_by_location(weekly_complaints_file)
+        apply_ai_specifications(weekly_complaints_file, gemini_api_key)
         weekly_vs_mtd_breakdown(weekly_complaints_file, monthly_complaints_file, weekly_RA_file)
         create_ratios(weekly_complaints_file, monthly_complaints_file)
         calculate_survey_metricks(weekly_complaints_file, monthly_complaints_file, weekly_RA_file,monthly_RA_file)
@@ -78,7 +86,7 @@ def generate_full_report(db_file, ra_file, refunds_path,start, end, int_month, o
         
     run_all_blocks()
     env = Environment(loader=FileSystemLoader(resource_path('.')))
-    template = env.get_template("html_template.html")
+    template = env.get_template(template_name)
     rendered_html = template.render(context)
     
     output_filename = output_path or "Finished_Report.html"

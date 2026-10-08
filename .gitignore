@@ -11,3 +11,7 @@ venv/
 
 # Data files
 *.xlsx
+.weekly_survey_maker.json
+
+# Rendered reports (contain customer data)
+Finished_Report*.html

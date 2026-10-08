@@ -64,3 +64,12 @@ def calculate_survey_metricks(weekly_complaints, monthly_complaints, weekly_RA,m
         survey_metrics.append(location)
     
     context["survey_metrics"] = survey_metrics
+
+    # Totals rows for the weekly / MTD survey stats tables.
+    totals = {}
+    for period in ("weekly", "mtd"):
+        period_totals = {key: sum(loc[period][key] for loc in survey_metrics)
+                         for key in ("pos", "neg", "neutral", "sent", "target")}
+        period_totals["pct"] = safe_pct(period_totals["sent"], period_totals["target"])
+        totals[period] = period_totals
+    context["survey_metrics_totals"] = totals

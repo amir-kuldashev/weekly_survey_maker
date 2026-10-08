@@ -158,6 +158,11 @@ context = {
         }
     ],
 
+    "survey_metrics_totals": {
+        "weekly": {"pos": -1, "neg": -1, "neutral": -1, "sent": -1, "target": -1, "pct": -1},
+        "mtd": {"pos": -1, "neg": -1, "neutral": -1, "sent": -1, "target": -1, "pct": -1}
+    },
+
     # --- Google Reviews ---
     "google_weekly_reviews": [
         {"name": -1, "d_pos": -1, "d_neg": -1, "a_pos": -1, "a_neg": -1}
@@ -194,8 +199,21 @@ context = {
         {"name": -1, "score": -1}
     ],
 
+    # --- AI complaint specifications (Gemini) ---
+    "ai_specs_status": "",
+
+    # --- KPI brand splits (Drivo / Ace) ---
+    "mtd_overall_neg_by_brand": {"drivo": -1, "ace": -1},
+    "weekly_total_by_brand": {"drivo": -1, "ace": -1},
+    "mtd_total_by_brand": {"drivo": -1, "ace": -1},
+    "surveys_by_brand": {"drivo": -1, "ace": -1},
+
     # --- Refunds Table ---
     "total_refunds": -1,
+    "refunds_count": -1,
+    "refunds_by_location": [
+        {"loc": -1, "count": -1, "amount": -1, "amount_value": -1, "pct": -1}
+    ],
     "refunds_list": [
         {
             "res": -1, 

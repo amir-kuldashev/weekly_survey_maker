@@ -1,5 +1,5 @@
 from .context import context
-from .const import locations
+from .const import locations, safe_pct
 review_sources = ["GOOGLE","YELP","TRUSTPILOT"]
 
 def create_surveys(weekly_file):
@@ -12,6 +12,10 @@ def create_surveys(weekly_file):
     context["surveys_neutral_count"] = stars_count.get(3,0)
     context["surveys_nodesc_count"] = (surveys_file_non_duplicate["No Information"]=="Yes").sum()
     context["surveys_neg_count"] = stars_count.get(2,0) + stars_count.get(1,0)-context["surveys_nodesc_count"]
+    for key in ("pos", "neg", "nodesc", "neutral"):
+        context[f"surveys_{key}_pct"] = safe_pct(context[f"surveys_{key}_count"], context["surveys_total"])
+    brand = surveys_file_non_duplicate["Brand"].astype(str).str.strip().str.upper()
+    context["surveys_by_brand"] = {"drivo": int((brand == "DRIVO").sum()), "ace": int((brand == "ACE").sum())}
     
 def create_reviews(weekly_file):
     reviews_file = weekly_file[weekly_file["Source"].isin(["GOOGLE", "YELP", "TRUSTPILOT"])]
@@ -23,6 +27,8 @@ def create_reviews(weekly_file):
     context["reviews_pos_count"] = stars_count.get(5,0)+stars_count.get(4,0)
     context["reviews_neutral_count"] = stars_count.get(3,0)
     context["reviews_neg_count"] = stars_count.get(1,0)+stars_count.get(2,0)-context["reviews_nodesc_count"]
+    for key in ("pos", "neg", "nodesc", "neutral"):
+        context[f"reviews_{key}_pct"] = safe_pct(context[f"reviews_{key}_count"], context["reviews_total"])
     
     #Drivo Brand
     drivo_reviews_file = reviews_file[reviews_file["Brand"]=="Drivo"]
@@ -31,7 +37,7 @@ def create_reviews(weekly_file):
     
     for source in review_sources:
         context[f"drivo_{source.lower()}_count"] = source_count.get(source,0)
-        context[f"drivo_{source.lower()}_pct"] = context[f"drivo_{source.lower()}_count"]/context["drivo_reviews_total"]*100
+        context[f"drivo_{source.lower()}_pct"] = safe_pct(context[f"drivo_{source.lower()}_count"], context["drivo_reviews_total"])
         
     #Ace Brand
     ace_reviews_file = reviews_file[reviews_file["Brand"]=="ACE"]
@@ -40,7 +46,7 @@ def create_reviews(weekly_file):
     
     for source in review_sources:
         context[f"ace_{source.lower()}_count"] = source_count.get(source,0)
-        context[f"ace_{source.lower()}_pct"] = context[f"ace_{source.lower()}_count"]/context["ace_reviews_total"]*100
+        context[f"ace_{source.lower()}_pct"] = safe_pct(context[f"ace_{source.lower()}_count"], context["ace_reviews_total"])
 
     
 def cc_complains(weekly_file):

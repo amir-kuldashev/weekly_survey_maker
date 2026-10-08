@@ -1,8 +1,28 @@
 import tkinter as tk
 from tkinter import filedialog, ttk, messagebox
 import datetime
+import json
+import os
 
-def launch_gui(run_automation_callback):
+CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".weekly_survey_maker.json")
+
+
+def load_config():
+    try:
+        with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+def save_config(data):
+    try:
+        with open(CONFIG_PATH, "w", encoding="utf-8") as f:
+            json.dump(data, f)
+    except OSError:
+        pass
+
+def launch_gui(run_automation_callback, templates=None):
     """
     Builds and launches the Tkinter GUI.
     :param run_automation_callback: The function to call when 'Generate' is clicked.
@@ -20,6 +40,10 @@ def launch_gui(run_automation_callback):
     end_date_var = tk.StringVar()
     month_var = tk.StringVar()
     output_path_var = tk.StringVar()
+    templates = templates or {"Dashboard": "html_template_dashboard.html"}
+    style_var = tk.StringVar(value=list(templates)[0])
+    config = load_config()
+    gemini_key_var = tk.StringVar(value=os.environ.get("GEMINI_API_KEY") or config.get("gemini_api_key", ""))
 
     # Style
     style = ttk.Style()
@@ -73,8 +97,14 @@ def launch_gui(run_automation_callback):
 
         # Trigger the logic passed from main.py
         if run_automation_callback:
-            saved_path = run_automation_callback(db_file, ra_file, refunds_file, start, end, int_month, output_file)
-            messagebox.showinfo("Done", f"Report saved to:\n{saved_path or output_file}")
+            template_name = templates.get(style_var.get(), list(templates.values())[0])
+            gemini_key = gemini_key_var.get().strip()
+            config["gemini_api_key"] = gemini_key
+            save_config(config)
+            saved_path = run_automation_callback(db_file, ra_file, refunds_file, start, end, int_month, output_file, template_name, gemini_key)
+            from .context import context
+            note = context.get("ai_specs_status") or ""
+            messagebox.showinfo("Done", f"Report saved to:\n{saved_path or output_file}\n\nAI complaint specifications: {note}")
         else:
             messagebox.showinfo("Placeholder", "GUI working! Connect your logic function.")
 
@@ -105,14 +135,22 @@ def launch_gui(run_automation_callback):
     month_combo = ttk.Combobox(root, textvariable=month_var, values=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], width=13)
     month_combo.grid(row=7, column=1, sticky="w", padx=5)
 
-    ttk.Label(root, text="Step 3: Choose Output", font=("Arial", 11, "bold")).grid(row=8, column=0, sticky="w", pady=(20, 10))
+    ttk.Label(root, text="Gemini API key (optional, for complaint specifications):").grid(row=8, column=0, sticky="w", pady=(10, 0))
+    ttk.Entry(root, textvariable=gemini_key_var, width=40, show="*").grid(row=8, column=1, padx=5, pady=(10, 0))
 
-    ttk.Label(root, text="Save Report As:").grid(row=9, column=0, sticky="w")
-    ttk.Entry(root, textvariable=output_path_var, width=40).grid(row=9, column=1, padx=5)
-    ttk.Button(root, text="Browse", command=browse_output_file).grid(row=9, column=2)
+    ttk.Label(root, text="Step 3: Choose Output", font=("Arial", 11, "bold")).grid(row=9, column=0, sticky="w", pady=(20, 10))
+
+    if len(templates) > 1:
+        ttk.Label(root, text="Report Style:").grid(row=10, column=0, sticky="w")
+        style_combo = ttk.Combobox(root, textvariable=style_var, values=list(templates), state="readonly", width=13)
+        style_combo.grid(row=10, column=1, sticky="w", padx=5)
+
+    ttk.Label(root, text="Save Report As:").grid(row=11, column=0, sticky="w", pady=5)
+    ttk.Entry(root, textvariable=output_path_var, width=40).grid(row=11, column=1, padx=5, pady=5)
+    ttk.Button(root, text="Browse", command=browse_output_file).grid(row=11, column=2, pady=5)
 
     # Generate Button
     generate_btn = ttk.Button(root, text="Generate HTML Report", command=on_generate_click)
-    generate_btn.grid(row=10, column=0, columnspan=3, pady=25, ipadx=10, ipady=5)
+    generate_btn.grid(row=12, column=0, columnspan=3, pady=25, ipadx=10, ipady=5)
 
     root.mainloop()

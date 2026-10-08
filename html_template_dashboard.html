@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="x-apple-disable-message-reformatting"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Drivo | Weekly Survey &amp; Review Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ============================================
+   DRIVO Weekly Survey & Review Report
+   Dashboard style: navy/blue/yellow on near-white
+   (tokens mirror drivo-dashboard/public/css/style.css)
+   ============================================ */
+:root {
+  --navy: #091365; --blue: #0D1CA4; --yellow: #F3BB04; --white: #FBFBFB; --black: #121212;
+  --bg: #F4F5FA; --surface: #FFFFFF; --surface-2: #F8F9FC; --border: #E4E7EF;
+  --muted: #6B7280; --text: #1A1F36; --text-soft: #4B5266;
+  --green: #10B981; --red: #EF4444; --orange: #F59E0B;
+  --shadow-sm: 0 1px 2px rgba(9,19,101,.04), 0 1px 3px rgba(9,19,101,.06);
+  --radius-sm: 8px; --radius: 14px; --radius-lg: 20px;
+  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+.page { max-width:1200px; margin:0 auto; padding:clamp(14px, 2.5vw, 28px) clamp(14px, 2.5vw, 24px) 60px; }
+
+/* semantic colors kept from the classic report */
+.positive { color:var(--green); font-weight:700; }
+.negative { color:var(--red); font-weight:700; }
+.nodescription { color:var(--orange); font-weight:700; }
+.neutral { color:var(--muted); font-weight:700; }
+.percentage-good { color:var(--green); font-weight:700; }
+.percentage-warn { color:#b45309; font-weight:700; }
+.percentage-bad { color:var(--red); font-weight:700; }
+.google-brand { color:#4285F4; font-weight:700; }
+.yelp-brand { color:#d71616; font-weight:700; }
+.trustpilot-brand { color:#04da8d; font-weight:700; }
+.refund-amount { color:var(--red); font-weight:700; }
+
+/* HERO */
+.hero { background:var(--navy); color:var(--white); border-radius:var(--radius-lg); padding:clamp(18px, 2.5vw, 26px) clamp(18px, 3vw, 30px); display:flex; align-items:center; justify-content:space-between; gap:20px; box-shadow:var(--shadow-sm); }
+.hero-brand { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.hero-logo { background:#fff; border-radius:10px; padding:10px 14px; line-height:0; }
+.hero-logo svg { width:118px; height:auto; display:block; }
+.hero-tag { font-size:10.5px; font-weight:700; letter-spacing:.22em; color:var(--yellow); }
+.hero-text { text-align:right; }
+.hero-kicker { font-size:11px; text-transform:uppercase; letter-spacing:.14em; color:rgba(255,255,255,.55); font-weight:600; }
+.hero-title { font-family:var(--font-display); font-size:clamp(22px, 3.2vw, 30px); font-weight:800; letter-spacing:-.02em; line-height:1.15; margin:6px 0 4px; }
+.hero-sub { font-size:13px; color:rgba(255,255,255,.75); }
+.hero-sub b { color:var(--yellow); font-weight:600; }
+
+.intro { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; margin-top:18px; box-shadow:var(--shadow-sm); font-size:13.5px; color:var(--text-soft); }
+.intro p { margin:0 0 6px; } .intro p:last-child { margin:0; }
+
+/* SECTION TITLE */
+.section-title { font-family:var(--font-display); font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:.10em; color:var(--muted); margin:28px 0 12px; display:flex; align-items:center; gap:10px; }
+.section-title::before { content:''; width:18px; height:2px; background:var(--yellow); }
+
+/* KPI */
+.kpi-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; }
+.kpi { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow-sm); position:relative; overflow:hidden; min-height:104px; }
+.kpi::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--blue); }
+.kpi.accent-yellow::before { background:var(--yellow); } .kpi.accent-navy::before { background:var(--navy); }
+.kpi.accent-green::before { background:var(--green); } .kpi.accent-red::before { background:var(--red); } .kpi.accent-orange::before { background:var(--orange); }
+.kpi-label { font-size:11px; text-transform:uppercase; letter-spacing:.10em; color:var(--muted); font-weight:600; margin-bottom:8px; }
+.kpi-value { font-family:var(--font-display); font-size:clamp(24px, 2.8vw, 30px); font-weight:700; letter-spacing:-.02em; color:var(--navy); line-height:1.1; }
+.kpi-value .unit { font-size:14px; color:var(--muted); font-weight:600; margin-left:4px; }
+.kpi-sub { margin-top:8px; font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.kpi-delta { display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:600; padding:2px 7px; border-radius:99px; }
+.kpi-delta.up { background:rgba(16,185,129,.12); color:var(--green); }
+.kpi-delta.down { background:rgba(239,68,68,.12); color:var(--red); }
+.kpi-delta.flat { background:rgba(107,114,128,.12); color:var(--muted); }
+.kpi-delta.warn { background:rgba(245,158,11,.14); color:#b45309; }
+.kpi-split { margin-top:10px; padding-top:8px; border-top:1px dashed var(--border); font-size:12px; color:var(--text-soft); display:flex; gap:14px; flex-wrap:wrap; }
+.kpi-split b { font-family:var(--font-display); color:var(--navy); font-size:13px; }
+.kpi-split .badge { margin-right:4px; }
+table.data tr.more { display:none; }
+table.data.expanded tr.more { display:table-row; }
+.toggle-more { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:6px 12px; border-radius:9px; border:1px solid var(--border); background:var(--surface); color:var(--blue); font:600 12px var(--font-body); cursor:pointer; }
+.toggle-more:hover { border-color:var(--blue); }
+.toggle-more .less { display:none; }
+.toggle-more.open .less { display:inline; } .toggle-more.open .all { display:none; }
+@media print { table.data tr.more { display:table-row; } .toggle-more { display:none; } }
+
+/* CARDS */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:clamp(14px, 2vw, 20px); min-width:0; box-shadow:var(--shadow-sm); margin-bottom:18px; }
+.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:12px; flex-wrap:wrap; }
+.card-title { font-family:var(--font-display); font-size:15px; font-weight:600; letter-spacing:-.01em; color:var(--navy); margin:0; display:flex; align-items:center; gap:8px; }
+.card-subtitle { font-size:11px; color:var(--muted); margin-top:2px; }
+.grid-2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; }
+.grid-2 > .card { margin-bottom:0; }
+.grid-2 + .grid-2, .grid-2 + .card { margin-top:18px; }
+.sub-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
+.period { font-size:11px; text-transform:uppercase; letter-spacing:.10em; color:var(--muted); font-weight:600; margin:0 0 8px; display:flex; justify-content:space-between; align-items:baseline; }
+.period .range { font-weight:500; letter-spacing:0; text-transform:none; color:var(--text-soft); }
+
+/* TABLES */
+.table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; scrollbar-width:thin; }
+.table-wrap + .toggle-more { margin-top:10px; }
+table.data { width:100%; border-collapse:collapse; font-size:13px; }
+table.data th, table.data td { padding:9px 12px; text-align:left; border-bottom:1px solid var(--border); vertical-align:middle; }
+table.data th { background:var(--surface-2); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+table.data th.num, table.data td.num { text-align:right; font-variant-numeric:tabular-nums; }
+table.data th.c, table.data td.c { text-align:center; font-variant-numeric:tabular-nums; }
+table.data th.grp { text-align:center; color:var(--navy); background:rgba(13,28,164,.06); border-left:1px solid var(--border); }
+table.data th.grp:first-of-type { border-left:0; }
+table.data .sep { border-left:1px solid var(--border); }
+table.data td.loc { font-weight:600; color:var(--navy); white-space:nowrap; }
+table.data tr.total td { background:var(--surface-2); font-weight:700; color:var(--navy); border-top:2px solid var(--border); }
+table.data tbody tr:last-child td { border-bottom:0; }
+table.data td.bar { width:30%; padding-left:14px; }
+table.data td.target-cell { width:34%; min-width:150px; }
+.target-wrap { flex-wrap:wrap; row-gap:3px; }
+.target-wrap .bar-track { min-width:110px; }
+.target-wrap .bar-note { width:auto !important; }
+table.data.compact th, table.data.compact td { padding:7px 10px; font-size:12.5px; }
+
+/* BADGES */
+.badge { display:inline-block; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:600; background:var(--surface-2); color:var(--text-soft); border:1px solid var(--border); white-space:nowrap; }
+.badge-yes { background:rgba(16,185,129,.12); color:var(--green); border-color:transparent; }
+.badge-no { background:rgba(239,68,68,.10); color:var(--red); border-color:transparent; }
+.badge-warn { background:rgba(243,187,4,.22); color:#8a6900; border-color:transparent; }
+.badge-blue { background:rgba(13,28,164,.10); color:var(--blue); border-color:transparent; }
+.badge-navy { background:var(--navy); color:#fff; border-color:transparent; }
+.badge-google { background:#4285F4; color:#fff; border-color:transparent; }
+.badge-yelp { background:#d71616; color:#fff; border-color:transparent; }
+.badge-bbb { background:#0a5c99; color:#fff; border-color:transparent; }
+.badge-nps { background:var(--blue); color:#fff; border-color:transparent; }
+.badge-survey { background:var(--green); color:#fff; border-color:transparent; }
+.badge.score { min-width:40px; text-align:center; font-size:12px; }
+
+/* BARS */
+.bar-track { background:var(--surface-2); height:8px; border-radius:99px; overflow:hidden; border:1px solid var(--border); }
+.bar-fill { height:100%; background:linear-gradient(90deg, var(--blue), var(--navy)); border-radius:99px; }
+.bar-fill.yellow { background:var(--yellow); }
+.bar-marker { position:absolute; top:-1px; bottom:-1px; width:2px; margin-left:-1px; background:var(--navy); }
+.bar-note { font-size:11px; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums; }
+.legend i.marker { width:2px; height:11px; border-radius:0; background:var(--navy); }
+.mix { display:flex; width:100%; height:8px; background:var(--surface-2); border-radius:99px; overflow:hidden; border:1px solid var(--border); }
+.mix span { display:block; height:100%; flex:0 0 0; min-width:0; }
+.mix .p { background:var(--green); } .mix .n { background:var(--red); } .mix .u { background:#64748b; }
+.legend { font-size:11px; color:var(--muted); margin-top:10px; }
+.legend i { display:inline-block; width:9px; height:9px; border-radius:2px; vertical-align:-1px; margin:0 4px 0 10px; }
+.legend i:first-child { margin-left:0; }
+
+/* INSIGHTS (confirmed cases, location narratives) */
+.insights { display:flex; flex-direction:column; gap:10px; margin:0; padding:0; list-style:none; }
+.insight-item { display:flex; gap:12px; padding:12px 14px; background:var(--surface-2); border-radius:10px; border-left:3px solid var(--blue); font-size:13px; }
+.insight-item.warn { border-left-color:var(--yellow); background:rgba(243,187,4,.07); }
+.insight-item b { color:var(--navy); }
+.narrative { margin:0; padding:0 0 0 18px; font-size:13px; color:var(--text-soft); line-height:1.6; }
+.narrative li { margin:2px 0; }
+.narrative b { color:var(--text); }
+.loc-head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.loc-name { font-family:var(--font-display); font-weight:700; color:var(--navy); font-size:15px; }
+.loc-meta { font-size:12px; color:var(--muted); }
+
+/* GROUPED COMPLAINTS CHART (class names kept for the editor's recalc) */
+.grouped-chart-container { width:100%; }
+.chart-title { font-family:var(--font-display); font-size:13px; font-weight:600; color:var(--navy); margin-bottom:14px; }
+.location-group { margin-bottom:18px; }
+.location-group:last-child { margin-bottom:0; }
+.location-title { font-size:13px; font-weight:700; margin-bottom:8px; color:var(--navy); }
+.category-row { display:flex; align-items:center; margin-bottom:5px; }
+.category-label { width:200px; font-size:11.5px; text-align:right; padding-right:10px; color:var(--text-soft); line-height:1.2; }
+.category-bar-container { flex-grow:1; height:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:99px; overflow:hidden; position:relative; }
+.category-bar { height:100%; border-radius:99px; }
+.category-value { width:36px; font-size:12px; padding-left:10px; font-weight:700; color:var(--navy); font-variant-numeric:tabular-nums; }
+.upsellcomplaints-bar { background-color:#ef4444; } .unexpectedfees-bar { background-color:#f97316; } .vehicleconditions-bar { background-color:#f59e0b; }
+.vehiclecleanlines-bar { background-color:#3b82f6; } .longwait-bar { background-color:#06b6d4; } .longshuttle-bar { background-color:#0ea5e9; }
+.shuttleservice-bar { background-color:#84cc16; } .locationcomplaint-bar { background-color:#6366f1; } .geozone-bar { background-color:#22c55e; }
+.damageclaims-bar { background-color:#f43f5e; } .rudeservice-bar { background-color:#8b5cf6; } .unhelpfulservice-bar { background-color:#a855f7; }
+.reservedvehicleunavailable-bar { background-color:#ec4899; } .callcentercomplaints-bar { background-color:#eab308; } .depositissues-bar { background-color:#10b981; }
+.insuranceverification-bar { background-color:#14b8a6; } .tollsandviolations-bar { background-color:#d946ef; } .othercomplaints-bar { background-color:#334155; } .noinformation-bar { background-color:#9ca3af; }
+
+/* SENTIMENT / SOURCE CARDS (inner markup kept for the editor's recalc) */
+.sent-total { font-family:var(--font-display); font-weight:700; color:var(--navy); letter-spacing:-.02em; }
+.mix-row { display:flex; align-items:center; gap:10px; margin:7px 0; }
+.mix-track { flex:1; height:10px; background:var(--surface-2); border:1px solid var(--border); border-radius:20px; overflow:hidden; }
+.mix-info { width:110px; font-size:12px; color:var(--text-soft); }
+.review-sources-card .mix-info { width:120px; }
+
+.footer { margin-top:28px; font-size:12px; color:var(--muted); display:flex; justify-content:space-between; border-top:1px solid var(--border); padding-top:14px; }
+
+/* ===== Report Editor UI ===== */
+#editor-toolbar{ position:sticky; top:0; z-index:9999; background:var(--navy); color:#fff; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:var(--font-body); border-bottom:3px solid var(--yellow); }
+#editor-toolbar .left, #editor-toolbar .right{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+#editor-toolbar button{ background:#fff; color:var(--navy); border:0; padding:7px 12px; border-radius:9px; font:600 12px var(--font-body); cursor:pointer; }
+#editor-toolbar button.secondary{ background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.25); }
+#editor-toolbar #download-static{ background:var(--yellow); color:var(--navy); font-weight:700; }
+#editor-toolbar .hint{ font-size:12px; opacity:.8; }
+#editor-toolbar .sep{ width:1px; height:26px; background:rgba(255,255,255,.2); margin:0 4px; }
+body.edit-mode #reportRoot[contenteditable="true"] *:focus{ outline:2px dashed rgba(13,28,164,.5); outline-offset:2px; }
+.selected-row{ outline:2px solid var(--blue) !important; }
+.selected-li{ outline:2px solid var(--blue) !important; }
+#editor-toast{ position:fixed; bottom:14px; right:14px; background:var(--navy); color:#fff; padding:10px 12px; border-radius:12px; font:12px var(--font-body); opacity:0; transform:translateY(10px); transition:all .18s ease; z-index:10000; }
+#editor-toast.show{ opacity:1; transform:translateY(0); }
+@media print{ #editor-toolbar, #editor-toast{ display:none !important; } body{ background:#fff; } .page{ padding:0; } }
+/* ===== Responsive ===== */
+img, svg { max-width:100%; }
+@media (min-width: 1500px){ .page { max-width:1320px; } }
+@media (max-width: 1024px){ .kpi-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px){ .grid-2, .sub-grid { grid-template-columns:minmax(0, 1fr); } .hero { flex-direction:column; text-align:center; } .hero-text { text-align:center; } }
+@media (max-width: 640px){
+  html, body { font-size:13.5px; }
+  .kpi-grid { grid-template-columns:minmax(0, 1fr); gap:10px; }
+  .kpi { min-height:0; padding:14px; }
+  .section-title { margin:22px 0 10px; }
+  .intro { padding:14px 16px; }
+  .card-header { flex-direction:column; align-items:flex-start; gap:6px; }
+  table.data { font-size:12px; }
+  table.data th, table.data td { padding:8px 8px; }
+  table.data td.bar, table.data td.target-cell { min-width:190px; }
+  .category-label { width:120px; font-size:10.5px; }
+  .mix-info { width:92px !important; font-size:11.5px; }
+  .footer { flex-direction:column; gap:4px; }
+  #editor-toolbar { padding:8px 10px; gap:8px; }
+  #editor-toolbar .hint { display:none; }
+  #editor-toolbar button { padding:6px 9px; font-size:11px; }
+  #editor-toast { left:14px; right:14px; }
+}
+@media (max-width: 420px){
+  .hero-logo svg { width:96px; }
+  .category-label { width:96px; font-size:10px; }
+  .kpi-split { gap:8px; }
+}
+</style>
+</head>
+<body>
+<div id="editor-toolbar" contenteditable="false">
+  <div class="left">
+    <button id="toggle-edit" class="secondary" type="button">Edit: ON</button>
+    <span class="sep" aria-hidden="true"></span>
+    <button id="add-row" type="button">Add Row</button>
+    <button id="delete-row" type="button">Delete Row</button>
+    <button id="add-item" type="button">Add List Item</button>
+    <button id="delete-item" type="button">Delete List Item</button>
+    <span class="sep" aria-hidden="true"></span>
+    <button id="recalc" class="secondary" type="button">Recalculate Charts</button>
+    <span class="hint">Tip: click a table row or bullet to select it, then use the buttons.</span>
+  </div>
+  <div class="right">
+    <button id="download-static" type="button">Download Static HTML</button>
+  </div>
+</div>
+<div id="editor-toast" contenteditable="false"></div>
+{% macro mix3(p, n, u) %}<div class="mix">{% if p + n + u %}<span class="p" style="flex-grow:{{ p }}"></span><span class="n" style="flex-grow:{{ n }}"></span><span class="u" style="flex-grow:{{ u }}"></span>{% endif %}</div>{% endmacro %}
+{% macro mix2(p, n) %}<div class="mix">{% if p + n %}<span class="p" style="flex-grow:{{ p }}"></span><span class="n" style="flex-grow:{{ n }}"></span>{% endif %}</div>{% endmacro %}
+{% macro ratio_badge(v) %}<span class="badge {% if v > 8 %}badge-no{% elif v > 6 %}badge-warn{% else %}badge-yes{% endif %} score">{{ v }}%</span>{% endmacro %}
+{% set RATIO_TARGET = 6 %}
+{% macro target_cell(v) %}<td class="bar target-cell"><div class="target-wrap" style="display:flex;align-items:center;gap:8px;"><div class="bar-track" data-scale="12" data-color="ratio" data-target="{{ RATIO_TARGET }}" style="flex:1;position:relative;"><div class="bar-fill" style="width:{{ [v / 12 * 100, 100]|min|round(1) }}%;{% if v > 8 %}background:var(--red);{% elif v > 6 %}background:var(--yellow);{% else %}background:var(--green);{% endif %}"></div><i class="bar-marker" style="left:{{ (RATIO_TARGET / 12 * 100)|round(1) }}%;"></i></div><span class="bar-note">{{ (v / RATIO_TARGET * 100)|round|int }}% of target</span></div></td>{% endmacro %}
+{% macro nps_badge(v) %}<span class="badge {% if v > 0 %}badge-yes{% elif v < 0 %}badge-no{% else %}badge{% endif %} score">{{ v }}</span>{% endmacro %}
+{% macro brand_table(rows, period_label, period_range, with_nr=False) %}
+<div class="period"><span>{{ period_label }}</span><span class="range">{{ period_range }}</span></div>
+<div class="table-wrap"><table class="data compact">
+<thead>
+<tr><th rowspan="2">Location</th><th class="grp" colspan="{{ 4 if with_nr else 3 }}">Drivo</th><th class="grp" colspan="{{ 4 if with_nr else 3 }}">Ace</th></tr>
+<tr><th class="c">Pos</th>{% if with_nr %}<th class="c">NR</th>{% endif %}<th class="c">Neg</th><th>Mix</th><th class="c sep">Pos</th>{% if with_nr %}<th class="c">NR</th>{% endif %}<th class="c">Neg</th><th>Mix</th></tr>
+</thead>
+<tbody>
+{% for row in rows %}
+<tr><td class="loc">{{ row.name }}</td><td class="c"><span class="positive">{{ row.d_pos }}</span></td>{% if with_nr %}<td class="c"><b>{{ row.d_nr }}</b></td>{% endif %}<td class="c"><span class="negative">{{ row.d_neg }}</span></td><td class="bar">{{ mix2(row.d_pos, row.d_neg) }}</td>{% if row.has_ace is not defined or row.has_ace %}<td class="c sep"><span class="positive">{{ row.a_pos }}</span></td>{% if with_nr %}<td class="c"><b>{{ row.a_nr }}</b></td>{% endif %}<td class="c"><span class="negative">{{ row.a_neg }}</span></td><td class="bar">{{ mix2(row.a_pos, row.a_neg) }}</td>{% else %}<td class="c sep" colspan="{{ 4 if with_nr else 3 }}" style="color:var(--muted);">no Ace page</td>{% endif %}</tr>
+{% endfor %}
+{% set ace_rows = rows|selectattr('has_ace', 'defined')|selectattr('has_ace')|list if rows and rows[0].has_ace is defined else rows %}
+<tr class="total"><td>Total</td><td class="c"><span class="positive">{{ rows|sum(attribute='d_pos') }}</span></td>{% if with_nr %}<td class="c">{{ rows|sum(attribute='d_nr') }}</td>{% endif %}<td class="c"><span class="negative">{{ rows|sum(attribute='d_neg') }}</span></td><td class="bar">{{ mix2(rows|sum(attribute='d_pos'), rows|sum(attribute='d_neg')) }}</td><td class="c sep"><span class="positive">{{ ace_rows|sum(attribute='a_pos') }}</span></td>{% if with_nr %}<td class="c">{{ ace_rows|sum(attribute='a_nr') }}</td>{% endif %}<td class="c"><span class="negative">{{ ace_rows|sum(attribute='a_neg') }}</span></td><td class="bar">{{ mix2(ace_rows|sum(attribute='a_pos'), ace_rows|sum(attribute='a_neg')) }}</td></tr>
+</tbody>
+</table></div>
+{% endmacro %}
+<div id="reportRoot">
+<div class="page">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-brand">
+    <div class="hero-logo"><svg width="142" height="32" viewBox="0 0 142 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M130.396 31.2684C123.408 31.2684 118.793 26.5361 118.793 20.2543C118.793 13.805 123.581 9.24023 130.44 9.24023C137.6 9.24023 142 14.0982 142 20.1706C142 26.4942 137.514 31.2684 130.396 31.2684ZM130.396 26.5361C134.192 26.5361 136.608 23.8977 136.608 20.2962C136.608 16.4852 134.106 13.9725 130.44 13.9725C126.73 13.9725 124.185 16.6109 124.185 20.2543C124.185 24.0234 126.687 26.5361 130.396 26.5361Z" fill="#0d1ca4"></path><path d="M105 30.841L96.3301 9.65039H102.283L107.804 25.0198H107.977L113.455 9.65039H119.235L110.694 30.841H105Z" fill="#0d1ca4"></path><path d="M90.9798 6.46979C89.0818 6.46979 87.874 5.21343 87.874 3.62205C87.874 1.98878 89.125 0.732422 90.9798 0.732422C92.8346 0.732422 94.0424 1.9469 94.0424 3.58017C94.0424 5.21343 92.8777 6.46979 90.9798 6.46979ZM88.3054 30.8431V9.65257H93.6542V30.8431H88.3054Z" fill="#0d1ca4"></path><path d="M82.2239 9.24023C83.4749 9.24023 84.3807 9.40775 84.9415 9.53339V14.2238L84.7689 14.3075C84.2082 14.2657 83.4317 14.1819 82.3533 14.1819C79.0751 14.1819 77.0908 15.8571 77.0908 19.668V30.8496H71.7852V9.65902H73.8557L75.9262 12.8418C76.6163 10.9573 78.8594 9.24023 82.2239 9.24023Z" fill="#0d1ca4"></path><path d="M54.1118 1.19336C63.5153 1.19336 68.8641 7.26576 68.8641 15.9765C68.8641 24.9385 63.3859 30.8434 53.9824 30.8434H42.1201V1.19336H54.1118ZM53.4216 25.8599C59.6331 25.8599 63.1271 21.9233 63.1271 15.9346C63.1271 10.1135 59.59 6.17691 53.3785 6.17691H47.5983V25.8599H53.4216Z" fill="#0d1ca4"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M6.05851 0.742188C2.71249 0.742188 0 3.45467 0 6.80069V25.2008C0 26.4524 0.379551 27.6154 1.02984 28.5809L14.1734 16.7246C14.5524 16.3827 14.5127 15.7765 14.0923 15.487L4.07902 8.59179C3.44011 8.15182 3.75147 7.15069 4.52721 7.15069H16.0054C16.242 7.15069 16.4733 7.22153 16.6693 7.35409L28.5771 15.4054C29.0682 15.7375 29.1228 16.4401 28.6888 16.844L13.2018 31.2593H26.595C29.941 31.2593 32.6535 28.5468 32.6535 25.2008V6.80069C32.6535 3.45467 29.941 0.742188 26.595 0.742188H6.05851Z" fill="#0d1ca4"></path></svg></div>
+    <div class="hero-tag">CUSTOMER CARE</div>
+  </div>
+  <div class="hero-text">
+    <div class="hero-kicker">Weekly Survey &amp; Review Report</div>
+    <div class="hero-title">Week of {{ report_week_date_range }}</div>
+    <div class="hero-sub">Sent {{ sent_date }} &nbsp;·&nbsp; MTD {{ mtd_date_range }}</div>
+  </div>
+</div>
+
+<div class="intro">
+  <p>Hello Team, hope all is well. Please see our results for the weekly survey report.</p>
+  <p>MTD overall ratio of negative complaints towards closed R/As: <b style="color:var(--text);">{{ mtd_overall_neg_complaints }} / {{ mtd_closed_ras }}</b> = {{ ratio_badge(mtd_overall_ratio) }}</p>
+</div>
+
+<!-- KPIs -->
+<div class="section-title">Executive KPIs</div>
+<div class="kpi-grid">
+  <div class="kpi {% if mtd_overall_ratio > 8 %}accent-red{% elif mtd_overall_ratio > 6 %}accent-orange{% else %}accent-green{% endif %}">
+    <div class="kpi-label">MTD complaint ratio</div>
+    <div class="kpi-value">{{ mtd_overall_ratio }}<span class="unit">%</span></div>
+    <div class="kpi-sub">{{ mtd_overall_neg_complaints }} negative / {{ mtd_closed_ras }} closed R/As <span class="kpi-delta {% if mtd_overall_ratio > 8 %}down{% elif mtd_overall_ratio > 6 %}warn{% else %}up{% endif %}">target ≤ 6%</span></div>
+    <div class="kpi-split"><span><span class="badge badge-navy">Drivo</span><b>{{ mtd_overall_neg_by_brand.drivo }}</b> negative</span><span><span class="badge badge-blue">Ace</span><b>{{ mtd_overall_neg_by_brand.ace }}</b> negative</span></div>
+  </div>
+  <div class="kpi accent-navy">
+    <div class="kpi-label">Weekly complaints</div>
+    <div class="kpi-value">{{ weekly_total_complaints }}</div>
+    <div class="kpi-sub">{{ weekly_closed_ras }} closed R/As <span class="kpi-delta flat">{{ weekly_ratio_all }}% ratio</span></div>
+    <div class="kpi-split"><span><span class="badge badge-navy">Drivo</span><b>{{ weekly_total_by_brand.drivo }}</b></span><span><span class="badge badge-blue">Ace</span><b>{{ weekly_total_by_brand.ace }}</b></span></div>
+  </div>
+  <div class="kpi accent-yellow">
+    <div class="kpi-label">MTD complaints</div>
+    <div class="kpi-value">{{ mtd_total_complaints }}</div>
+    <div class="kpi-sub">{{ mtd_date_range }} <span class="kpi-delta flat">{{ mtd_ratio_all }}% ratio</span></div>
+    <div class="kpi-split"><span><span class="badge badge-navy">Drivo</span><b>{{ mtd_total_by_brand.drivo }}</b></span><span><span class="badge badge-blue">Ace</span><b>{{ mtd_total_by_brand.ace }}</b></span></div>
+  </div>
+  <div class="kpi accent-green">
+    <div class="kpi-label">Surveys this week</div>
+    <div class="kpi-value">{{ surveys_total }}</div>
+    <div class="kpi-sub"><span class="positive">{{ surveys_pos_count }}</span> positive · <span class="negative">{{ surveys_neg_count }}</span> negative</div>
+    <div class="kpi-split"><span><span class="badge badge-navy">Drivo</span><b>{{ surveys_by_brand.drivo }}</b></span><span><span class="badge badge-blue">Ace</span><b>{{ surveys_by_brand.ace }}</b></span></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Reviews this week</div>
+    <div class="kpi-value">{{ reviews_total }}</div>
+    <div class="kpi-sub"><span class="positive">{{ reviews_pos_count }}</span> positive · <span class="negative">{{ reviews_neg_count }}</span> negative</div>
+    <div class="kpi-split"><span><span class="badge badge-navy">Drivo</span><b>{{ drivo_reviews_total }}</b></span><span><span class="badge badge-blue">Ace</span><b>{{ ace_reviews_total }}</b></span></div>
+  </div>
+  <div class="kpi accent-red">
+    <div class="kpi-label">Refunds this week</div>
+    <div class="kpi-value">{{ total_refunds }}</div>
+    <div class="kpi-sub">{{ refunds_count }} CREDIT-CS refunds across {{ refunds_by_location|length }} locations</div>
+    <div class="kpi-split">{% for r in refunds_by_location[:3] %}<span><b>{{ r.loc }}</b> {{ r.amount }}</span>{% endfor %}</div>
+  </div>
+</div>
+
+<!-- MTD RATIO BY LOCATION -->
+<div class="section-title">MTD complaint ratio by location</div>
+<div class="card">
+  <div class="card-header"><div><h3 class="card-title">Negative complaints vs closed R/As</h3><div class="card-subtitle">Month to date · {{ mtd_date_range }}</div></div></div>
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Location</th><th class="num">Negative complaints</th><th class="num">Closed R/A's</th><th class="num">Ratio</th><th>Share of 6% target</th></tr></thead>
+    <tbody>
+    <tr class="total"><td>TOTAL</td><td class="num">{{ mtd_overall_neg_complaints }}</td><td class="num">{{ mtd_closed_ras }}</td><td class="num">{{ ratio_badge(mtd_overall_ratio) }}</td>{{ target_cell(mtd_overall_ratio) }}</tr>
+    {% for loc in [('EWR', mtd_ewr_complaints, mtd_ewr_ras, mtd_ewr_pct), ('EWRCON', mtd_ewrcon_complaints, mtd_ewrcon_ras, mtd_ewrcon_pct), ('JFK', mtd_jfk_complaints, mtd_jfk_ras, mtd_jfk_pct), ('LGA', mtd_lga_complaints, mtd_lga_ras, mtd_lga_pct), ('BRK', mtd_brk_complaints, mtd_brk_ras, mtd_brk_pct), ('BRKJS', mtd_brkjs_complaints, mtd_brkjs_ras, mtd_brkjs_pct)] %}
+    <tr><td class="loc">{{ loc[0] }}</td><td class="num">{{ loc[1] }}</td><td class="num">{{ loc[2] }}</td><td class="num">{{ ratio_badge(loc[3]) }}</td>{{ target_cell(loc[3]) }}</tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <div class="legend"><i style="background:var(--green)"></i>≤ 6% <i style="background:var(--yellow)"></i>6–8% <i style="background:var(--red)"></i>&gt; 8% <i class="marker"></i>6% target &nbsp;·&nbsp; bar scale 0–12% · share = ratio ÷ 6% target</div>
+</div>
+
+<!-- SURVEY & REVIEW METRICS -->
+<div class="section-title">Weekly survey &amp; review metrics</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><div><h3 class="card-title">Surveys</h3><div class="card-subtitle">Drivo email surveys · {{ weekly_date_range }}</div></div></div>
+    <div class="sent-total" style="font-size:28px;">{{ surveys_total }}</div>
+    <div style="font-size:12px;font-weight:600;color:var(--text);margin:8px 0 4px;">Sentiment mix</div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ surveys_pos_pct }}%;background:var(--green);"></span></div><div class="mix-info" style="width:110px;"><span class="positive">{{ surveys_pos_count }}</span> ({{ surveys_pos_pct }}%)</div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ surveys_neg_pct }}%;background:var(--red);"></span></div><div class="mix-info" style="width:110px;"><span class="negative">{{ surveys_neg_count }}</span> ({{ surveys_neg_pct }}%)</div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ surveys_nodesc_pct }}%;background:var(--orange);"></span></div><div class="mix-info" style="width:110px;"><span class="nodescription">{{ surveys_nodesc_count }}</span> ({{ surveys_nodesc_pct }}%)</div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ surveys_neutral_pct }}%;background:#9ca3af;"></span></div><div class="mix-info" style="width:110px;"><span class="neutral">{{ surveys_neutral_count }}</span> ({{ surveys_neutral_pct }}%)</div></div>
+    <div class="legend"><i style="background:var(--green)"></i>Positive <i style="background:var(--red)"></i>Negative <i style="background:var(--orange)"></i>No description <i style="background:#9ca3af"></i>Neutral</div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div><h3 class="card-title">Reviews</h3><div class="card-subtitle">Google · Yelp · Trustpilot · {{ weekly_date_range }}</div></div></div>
+    <div class="sent-total" style="font-size:28px;">{{ reviews_total }}</div>
+    <div style="font-size:12px;font-weight:600;color:var(--text);margin:8px 0 4px;">Sentiment mix</div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ reviews_pos_pct }}%;background:var(--green);"></span></div><div class="mix-info" style="width:110px;"><span class="positive">{{ reviews_pos_count }}</span> ({{ reviews_pos_pct }}%)</div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ reviews_neg_pct }}%;background:var(--red);"></span></div><div class="mix-info" style="width:110px;"><span class="negative">{{ reviews_neg_count }}</span> ({{ reviews_neg_pct }}%)</div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ reviews_nodesc_pct }}%;background:var(--orange);"></span></div><div class="mix-info" style="width:110px;"><span class="nodescription">{{ reviews_nodesc_count }}</span> ({{ reviews_nodesc_pct }}%)</div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ reviews_neutral_pct }}%;background:#9ca3af;"></span></div><div class="mix-info" style="width:110px;"><span class="neutral">{{ reviews_neutral_count }}</span> ({{ reviews_neutral_pct }}%)</div></div>
+    <div class="legend"><i style="background:var(--green)"></i>Positive <i style="background:var(--red)"></i>Negative <i style="background:var(--orange)"></i>No description <i style="background:#9ca3af"></i>Neutral</div>
+  </div>
+</div>
+<div class="grid-2">
+  <table class="card review-sources-card" role="presentation" style="border-collapse:separate;"><tr><td style="padding:0;">
+    <div class="card-header"><div><h3 class="card-title">Review sources <span class="badge badge-navy">Drivo</span></h3><div class="card-subtitle"><span class="review-total">{{ drivo_reviews_total }}</span> reviews this week</div></div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ drivo_google_pct }}%;background:#4285F4;"></span></div><div class="mix-info" style="width:120px;"><span class="google-brand">{{ drivo_google_count }}</span> ({{ drivo_google_pct }}%)</div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ drivo_yelp_pct }}%;background:#d71616;"></span></div><div class="mix-info" style="width:120px;"><span class="yelp-brand">{{ drivo_yelp_count }}</span> ({{ drivo_yelp_pct }}%)</div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ drivo_trustpilot_pct }}%;background:#04da8d;"></span></div><div class="mix-info" style="width:120px;"><span class="trustpilot-brand">{{ drivo_trustpilot_count }}</span> ({{ drivo_trustpilot_pct }}%)</div></div>
+    <div class="legend"><i style="background:#4285F4"></i>Google <i style="background:#d71616"></i>Yelp <i style="background:#04da8d"></i>Trustpilot</div>
+  </td></tr></table>
+  <table class="card review-sources-card" role="presentation" style="border-collapse:separate;"><tr><td style="padding:0;">
+    <div class="card-header"><div><h3 class="card-title">Review sources <span class="badge badge-blue">Ace</span></h3><div class="card-subtitle"><span class="review-total">{{ ace_reviews_total }}</span> reviews this week</div></div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ ace_google_pct }}%;background:#4285F4;"></span></div><div class="mix-info" style="width:120px;"><span class="google-brand">{{ ace_google_count }}</span> ({{ ace_google_pct }}%)</div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ ace_yelp_pct }}%;background:#d71616;"></span></div><div class="mix-info" style="width:120px;"><span class="yelp-brand">{{ ace_yelp_count }}</span> ({{ ace_yelp_pct }}%)</div></div>
+    <div class="mix-row" style="display:flex;align-items:center;gap:10px;"><div class="mix-track" style="overflow:hidden;"><span style="display:block;height:10px;width:{{ ace_trustpilot_pct }}%;background:#04da8d;"></span></div><div class="mix-info" style="width:120px;"><span class="trustpilot-brand">{{ ace_trustpilot_count }}</span> ({{ ace_trustpilot_pct }}%)</div></div>
+    <div class="legend"><i style="background:#4285F4"></i>Google <i style="background:#d71616"></i>Yelp <i style="background:#04da8d"></i>Trustpilot</div>
+  </td></tr></table>
+</div>
+
+<!-- COMPLAINTS SUMMARY -->
+<div class="section-title">Weekly complaints summary</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><div><h3 class="card-title">Call center complaints</h3><div class="card-subtitle">By location · {{ weekly_date_range }}</div></div></div>
+    <div class="table-wrap"><table class="data compact">
+      <thead><tr><th class="c">JFK</th><th class="c">EWR</th><th class="c">EWRCON</th><th class="c">BRK</th><th class="c">BRKJS</th><th class="c">LGA</th><th class="c">Total</th></tr></thead>
+      <tbody><tr><td class="c">{{ cc_jfk }}</td><td class="c">{{ cc_ewr }}</td><td class="c">{{ cc_ewrcon }}</td><td class="c">{{ cc_brk }}</td><td class="c">{{ cc_brkjs }}</td><td class="c">{{ cc_lga }}</td><td class="c"><span class="negative">{{ cc_total }}</span></td></tr></tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div><h3 class="card-title">Confirmed cases</h3><div class="card-subtitle">Investigated and confirmed this week</div></div></div>
+    <ul class="insights">
+    {% for case in confirmed_cases %}
+      <li class="insight-item warn confirmed-case"><b>{{ case.id }}</b><span>{{ case.description }}</span></li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<!-- BY LOCATION AND CATEGORY -->
+<div class="section-title">Complaints by location and category</div>
+<div class="card">
+  <div class="card-header"><div><h3 class="card-title">Complaints breakdown by location and category</h3><div class="card-subtitle">Week of {{ report_week_date_range }} · Drivo surveys + call center, duplicates removed</div></div></div>
+  <div class="grouped-chart-container">
+  {% for loc in location_chart_data %}
+  <div class="location-group">
+    <div class="location-title">{{ loc.name }} ({{ loc.total_complaints }} total complaints)</div>
+    {% for cat in loc.categories %}
+    <div class="category-row">
+      <div class="category-label">{{ cat.name }}</div>
+      <div class="category-bar-container"><div class="category-bar {{ cat.css_class }}" style="width: {{ cat.percentage }}%;"></div></div>
+      <div class="category-value">{{ cat.count }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+  </div>
+</div>
+
+<!-- NARRATIVE BY LOCATION -->
+<div class="section-title">Weekly complaints by location</div>
+<div class="grid-2">
+{% for loc in narrative_lists %}
+  <div class="card">
+    <div class="loc-head"><div class="loc-name">{{ loc.name }} <span class="badge badge-no">{{ loc.total_complaints }} complaints</span></div><div class="loc-meta">{{ loc.negative_surveys }} negative surveys + {{ loc.cc_feedback }} call center feedback</div></div>
+    <ul class="narrative">
+    {% for bullet in loc.bullets %}
+      <li><b><span class="negative">{{ bullet.count }}</span> {{ bullet.title }}:</b> {{ bullet.description }}</li>
+    {% endfor %}
+    </ul>
+  </div>
+{% endfor %}
+</div>
+
+<!-- WEEKLY VS MTD -->
+<div class="section-title">Weekly vs month to date breakdown</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><div><h3 class="card-title">Weekly breakdown</h3><div class="card-subtitle">{{ weekly_date_range }} · <span class="negative">{{ weekly_total_complaints }}</span> complaints · top 5 categories</div></div></div>
+    <div class="table-wrap"><table class="data compact" id="weekly-breakdown">
+      <thead><tr><th>Category</th><th class="num">Cases</th><th class="num">% Total</th><th class="num">% R/A's</th></tr></thead>
+      <tbody>
+      {% for row in weekly_breakdown_rows %}
+      <tr{% if loop.index > 5 %} class="more"{% endif %}><td>{{ row.category }}</td><td class="num"><span class="negative">{{ row.cases }}</span></td><td class="num">{{ row.pct_total }}%</td><td class="num"><b>{{ row.pct_ra }}%</b></td></tr>
+      {% endfor %}
+      <tr class="total"><td>Total</td><td class="num"><span class="negative">{{ weekly_total_complaints }}</span></td><td></td><td></td></tr>
+      <tr class="total"><td>Closed R/A's</td><td class="num">{{ weekly_closed_ras }}</td><td></td><td></td></tr>
+      </tbody>
+    </table></div>
+    {% if weekly_breakdown_rows|length > 5 %}<button type="button" class="toggle-more" data-target="weekly-breakdown" contenteditable="false"><span class="all">Show all {{ weekly_breakdown_rows|length }} categories ▾</span><span class="less">Show top 5 ▴</span></button>{% endif %}
+  </div>
+  <div class="card">
+    <div class="card-header"><div><h3 class="card-title">Month to date breakdown</h3><div class="card-subtitle">{{ mtd_date_range }} · <span class="negative">{{ mtd_total_complaints }}</span> complaints · top 5 categories</div></div></div>
+    <div class="table-wrap"><table class="data compact" id="mtd-breakdown">
+      <thead><tr><th>Category</th><th class="num">Cases</th><th class="num">% Total</th><th class="num">% R/A's</th></tr></thead>
+      <tbody>
+      {% for row in mtd_breakdown_rows %}
+      <tr{% if loop.index > 5 %} class="more"{% endif %}><td>{{ row.category }}</td><td class="num"><span class="negative">{{ row.cases }}</span></td><td class="num">{{ row.pct_total }}%</td><td class="num"><b>{{ row.pct_ra }}%</b></td></tr>
+      {% endfor %}
+      <tr class="total"><td>Total</td><td class="num"><span class="negative">{{ mtd_total_complaints }}</span></td><td></td><td></td></tr>
+      <tr class="total"><td>Closed R/A's</td><td class="num">{{ mtd_closed_ras }}</td><td></td><td></td></tr>
+      </tbody>
+    </table></div>
+    {% if mtd_breakdown_rows|length > 5 %}<button type="button" class="toggle-more" data-target="mtd-breakdown" contenteditable="false"><span class="all">Show all {{ mtd_breakdown_rows|length }} categories ▾</span><span class="less">Show top 5 ▴</span></button>{% endif %}
+  </div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><div><h3 class="card-title">Weekly ratios</h3><div class="card-subtitle">{{ weekly_date_range }}</div></div></div>
+    <div class="table-wrap"><table class="data compact">
+      <thead><tr><th>Complaints</th><th class="num">Count</th><th class="num">Closed R/A's</th><th class="num">Ratio</th></tr></thead>
+      <tbody>
+      <tr><td>Survey and CC complaints only</td><td class="num"><span class="negative">{{ weekly_survey_cc_only }}</span></td><td class="num">{{ weekly_closed_ras }}</td><td class="num">{{ ratio_badge(weekly_ratio_survey_cc) }}</td></tr>
+      <tr><td>Surveys + CC complaints</td><td class="num"><span class="negative">{{ weekly_all_complaints }}</span></td><td class="num">{{ weekly_closed_ras }}</td><td class="num">{{ ratio_badge(weekly_ratio_all) }}</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div><h3 class="card-title">Month to date ratios</h3><div class="card-subtitle">{{ mtd_date_range }}</div></div></div>
+    <div class="table-wrap"><table class="data compact">
+      <thead><tr><th>Complaints</th><th class="num">Count</th><th class="num">Closed R/A's</th><th class="num">Ratio</th></tr></thead>
+      <tbody>
+      <tr><td>Survey and CC complaints only</td><td class="num"><span class="negative">{{ mtd_survey_cc_only }}</span></td><td class="num">{{ mtd_closed_ras }}</td><td class="num">{{ ratio_badge(mtd_ratio_survey_cc) }}</td></tr>
+      <tr><td>Surveys + CC complaints</td><td class="num"><span class="negative">{{ mtd_all_complaints }}</span></td><td class="num">{{ mtd_closed_ras }}</td><td class="num">{{ ratio_badge(mtd_ratio_all) }}</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- EMAIL SURVEY METRICS -->
+<div class="section-title">Email survey metrics</div>
+<div class="card">
+  <div class="card-header"><div><h3 class="card-title">Survey requests sent</h3><div class="card-subtitle">Surveys received vs closed R/As · {{ weekly_date_range }}</div></div></div>
+  <div class="table-wrap"><table class="data compact">
+    <thead><tr><th>Location</th><th class="num">Surveys</th><th class="num">Closed R/A's</th><th class="num">Response rate</th><th>Progress</th></tr></thead>
+    <tbody>
+    <tr class="total"><td>TOTAL</td><td class="num">{{ email_total_sent }}</td><td class="num">{{ email_total_target }}</td><td class="num">{{ email_total_pct }}%</td><td class="bar"><div class="bar-track"><div class="bar-fill" style="width:{{ [email_total_pct, 100]|min }}%;"></div></div></td></tr>
+    {% for loc in email_survey_locations %}
+    <tr><td class="loc">{{ loc.name }}</td><td class="num">{{ loc.sent }}</td><td class="num">{{ loc.target }}</td><td class="num">{{ loc.pct }}%</td><td class="bar"><div class="bar-track"><div class="bar-fill" style="width:{{ [loc.pct, 100]|min }}%;"></div></div></td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</div>
+<div class="card">
+  <div class="card-header"><div><h3 class="card-title"><span class="badge badge-survey">Email survey</span> Weekly stats by location</h3><div class="card-subtitle">Positive = 4–5 stars · Negative = 1–2 stars · Neutral = 3 stars</div></div></div>
+  <div class="sub-grid">
+    <div>
+      <div class="period"><span>Weekly</span><span class="range">{{ weekly_date_range }}</span></div>
+      <div class="table-wrap"><table class="data compact">
+        <thead><tr><th>Location</th><th class="c">Pos</th><th class="c">Neg</th><th class="c">Neu</th><th>Mix</th></tr></thead>
+        <tbody>
+        {% for row in survey_metrics %}
+        <tr><td class="loc">{{ row.name }}</td><td class="c"><span class="positive">{{ row.weekly.pos }}</span></td><td class="c"><span class="negative">{{ row.weekly.neg }}</span></td><td class="c"><span class="neutral">{{ row.weekly.neutral }}</span></td><td class="bar">{{ mix3(row.weekly.pos, row.weekly.neg, row.weekly.neutral) }}</td></tr>
+        {% endfor %}
+        <tr class="total"><td>Total</td><td class="c"><span class="positive">{{ survey_metrics_totals.weekly.pos }}</span></td><td class="c"><span class="negative">{{ survey_metrics_totals.weekly.neg }}</span></td><td class="c"><span class="neutral">{{ survey_metrics_totals.weekly.neutral }}</span></td><td class="bar">{{ mix3(survey_metrics_totals.weekly.pos, survey_metrics_totals.weekly.neg, survey_metrics_totals.weekly.neutral) }}</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <div class="period"><span>Month to date</span><span class="range">{{ mtd_date_range }}</span></div>
+      <div class="table-wrap"><table class="data compact">
+        <thead><tr><th>Location</th><th class="c">Pos</th><th class="c">Neg</th><th class="c">Neu</th><th>Mix</th></tr></thead>
+        <tbody>
+        {% for row in survey_metrics %}
+        <tr><td class="loc">{{ row.name }}</td><td class="c"><span class="positive">{{ row.mtd.pos }}</span></td><td class="c"><span class="negative">{{ row.mtd.neg }}</span></td><td class="c"><span class="neutral">{{ row.mtd.neutral }}</span></td><td class="bar">{{ mix3(row.mtd.pos, row.mtd.neg, row.mtd.neutral) }}</td></tr>
+        {% endfor %}
+        <tr class="total"><td>Total</td><td class="c"><span class="positive">{{ survey_metrics_totals.mtd.pos }}</span></td><td class="c"><span class="negative">{{ survey_metrics_totals.mtd.neg }}</span></td><td class="c"><span class="neutral">{{ survey_metrics_totals.mtd.neutral }}</span></td><td class="bar">{{ mix3(survey_metrics_totals.mtd.pos, survey_metrics_totals.mtd.neg, survey_metrics_totals.mtd.neutral) }}</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="legend"><i style="background:var(--green)"></i>Positive <i style="background:var(--red)"></i>Negative <i style="background:#64748b"></i>Neutral</div>
+</div>
+
+<!-- REVIEW METRICS -->
+<div class="section-title">Weekly review metrics</div>
+<div class="card">
+  <div class="card-header"><div><h3 class="card-title"><span class="badge badge-google">Google</span> Drivo / Ace reviews by location</h3><div class="card-subtitle">Positive = 4–5 stars · Negative = 1–3 stars</div></div></div>
+  <div class="sub-grid">
+    <div>{{ brand_table(google_weekly_reviews, 'Weekly', weekly_date_range) }}</div>
+    <div>{{ brand_table(google_mtd_reviews, 'Month to date', mtd_date_range) }}</div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header"><div><h3 class="card-title"><span class="badge badge-yelp">Yelp</span> Drivo / Ace reviews by location</h3><div class="card-subtitle">NR = not recommended, shown separately and not in the mix</div></div></div>
+  <div class="sub-grid">
+    <div>{{ brand_table(yelp_weekly_reviews, 'Weekly', weekly_date_range, True) }}</div>
+    <div>{{ brand_table(yelp_mtd_reviews, 'Month to date', mtd_date_range, True) }}</div>
+  </div>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><div><h3 class="card-title"><span class="badge badge-bbb">BBB</span> Drivo reviews</h3><div class="card-subtitle">Weekly and month to date</div></div></div>
+    <div class="table-wrap"><table class="data compact">
+      <thead>
+      <tr><th rowspan="2">Location</th><th class="grp" colspan="2">Weekly</th><th class="grp" colspan="2">Month to date</th></tr>
+      <tr><th class="c">Pos</th><th class="c">Neg</th><th class="c sep">Pos</th><th class="c">Neg</th></tr>
+      </thead>
+      <tbody>
+      {% for row in bbb_reviews_weekly %}
+      {% set mtd_row = bbb_reviews_mtd[loop.index0] if loop.index0 < bbb_reviews_mtd|length else {"pos": 0, "neg": 0} %}
+      <tr><td class="loc">{{ row.name }}</td><td class="c"><span class="positive">{{ row.pos }}</span></td><td class="c"><span class="negative">{{ row.neg }}</span></td><td class="c sep"><span class="positive">{{ mtd_row.pos }}</span></td><td class="c"><span class="negative">{{ mtd_row.neg }}</span></td></tr>
+      {% endfor %}
+      <tr class="total"><td>Total</td><td class="c"><span class="positive">{{ bbb_reviews_weekly|sum(attribute='pos') }}</span></td><td class="c"><span class="negative">{{ bbb_reviews_weekly|sum(attribute='neg') }}</span></td><td class="c sep"><span class="positive">{{ bbb_reviews_mtd|sum(attribute='pos') }}</span></td><td class="c"><span class="negative">{{ bbb_reviews_mtd|sum(attribute='neg') }}</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div><h3 class="card-title"><span class="badge badge-nps">NPS</span> Email survey score</h3><div class="card-subtitle">Net promoter score by location</div></div></div>
+    <div class="table-wrap"><table class="data compact">
+      <thead><tr><th>Location</th><th class="c">Weekly<br/><span style="font-weight:500;text-transform:none;letter-spacing:0;">{{ weekly_date_range }}</span></th><th class="c sep">Month to date<br/><span style="font-weight:500;text-transform:none;letter-spacing:0;">{{ mtd_date_range }}</span></th></tr></thead>
+      <tbody>
+      <tr class="total"><td>TOTAL</td><td class="c">{{ nps_badge(nps_weekly_total) }}</td><td class="c sep">{{ nps_badge(nps_mtd_total) }}</td></tr>
+      {% for row in nps_weekly_locations %}
+      {% set mtd_row = nps_mtd_locations[loop.index0] if loop.index0 < nps_mtd_locations|length else {"score": 0} %}
+      <tr><td class="loc">{{ row.name }}</td><td class="c">{{ nps_badge(row.score) }}</td><td class="c sep">{{ nps_badge(mtd_row.score) }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- REFUNDS -->
+<div class="section-title">Weekly refunds</div>
+<div class="card">
+  <div class="card-header"><div><h3 class="card-title">CREDIT-CS refunds by location</h3><div class="card-subtitle">Refund for customer service · {{ weekly_date_range }}</div></div><div class="kpi-value" style="font-size:22px;">Total <span class="refund-amount">{{ total_refunds }}</span></div></div>
+  <div class="table-wrap"><table class="data compact">
+    <thead><tr><th>Location</th><th class="num">Refunds</th><th class="num">Amount</th><th class="num">Share</th><th>Share of total</th></tr></thead>
+    <tbody>
+    {% for r in refunds_by_location %}
+    <tr><td class="loc">{{ r.loc }}</td><td class="num">{{ r.count }}</td><td class="num"><span class="refund-amount">{{ r.amount }}</span></td><td class="num">{{ r.pct }}%</td><td class="bar"><div class="bar-track"><div class="bar-fill" style="width:{{ [r.pct, 100]|min }}%;background:var(--red);"></div></div></td></tr>
+    {% endfor %}
+    <tr class="total"><td>Total</td><td class="num">{{ refunds_count }}</td><td class="num"><span class="refund-amount">{{ total_refunds }}</span></td><td class="num">100%</td><td class="bar"><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--red);"></div></div></td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="footer"><span>Weekly Survey &amp; Review Report</span><span>Drivo Customer Care</span></div>
+</div>
+</div>
+
+<script id="toggle-script">
+(function(){
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('.toggle-more');
+    if(!btn) return;
+    e.preventDefault();
+    var table = document.getElementById(btn.getAttribute('data-target'));
+    if(!table) return;
+    var open = table.classList.toggle('expanded');
+    btn.classList.toggle('open', open);
+  });
+})();
+</script>
+<script id="editor-script">
+(function(){
+  const reportRoot = document.getElementById('reportRoot');
+  const toastEl = document.getElementById('editor-toast');
+
+  let editMode = true;
+  let selectedRow = null;
+  let selectedLi = null;
+
+  function toast(msg){
+    if(!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastEl._t);
+    toastEl._t = setTimeout(()=>toastEl.classList.remove('show'), 1700);
+  }
+
+  function clearSelection(){
+    if(selectedRow){ selectedRow.classList.remove('selected-row'); }
+    if(selectedLi){ selectedLi.classList.remove('selected-li'); }
+    selectedRow = null;
+    selectedLi = null;
+  }
+
+  function setSelectedRow(tr){
+    if(selectedRow){ selectedRow.classList.remove('selected-row'); }
+    selectedRow = tr;
+    if(selectedRow){ selectedRow.classList.add('selected-row'); }
+  }
+
+  function setSelectedLi(li){
+    if(selectedLi){ selectedLi.classList.remove('selected-li'); }
+    selectedLi = li;
+    if(selectedLi){ selectedLi.classList.add('selected-li'); }
+  }
+
+  function setEditMode(on){
+    editMode = !!on;
+    document.body.classList.toggle('edit-mode', editMode);
+    if(reportRoot){
+      reportRoot.contentEditable = editMode ? 'true' : 'false';
+      reportRoot.setAttribute('spellcheck', 'false');
+    }
+    
+    // Lock purely-visual bar elements so editing doesn't accidentally break charts
+    if(reportRoot){
+      const lock = reportRoot.querySelectorAll(
+        '.category-bar, .category-bar-container, .chart-bar, .chart-bar-container'
+      );
+      lock.forEach(el => el.setAttribute('contenteditable','false'));
+      // sentiment progress bars are built with overflow-hidden containers
+      reportRoot.querySelectorAll('div[style*="overflow:hidden"]').forEach(el=>{
+        el.setAttribute('contenteditable','false');
+      });
+    }
+const tgl = document.getElementById('toggle-edit');
+    if(tgl) tgl.textContent = editMode ? 'Edit: ON' : 'Edit: OFF';
+    toast(editMode ? 'Edit mode enabled' : 'Edit mode disabled');
+  }
+
+  // --- Charts ---
+  function toNumber(txt){
+    if(txt == null) return 0;
+    const s = String(txt).replace(/,/g,'').trim();
+    const m = s.match(/-?\d+(\.\d+)?/);
+    return m ? Number(m[0]) : 0;
+  }
+
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+  function recalcGroupedComplaints(){
+    const groups = reportRoot ? reportRoot.querySelectorAll('.location-group') : [];
+    groups.forEach(group=>{
+      const rows = group.querySelectorAll('.category-row');
+      const values = [];
+      rows.forEach(r=>{
+        const valEl = r.querySelector('.category-value');
+        const v = toNumber(valEl ? valEl.textContent : 0);
+        values.push(v);
+      });
+      const max = values.length ? Math.max(...values) : 0;
+      const total = values.reduce((a,b)=>a+b,0);
+
+      // Update title "(xx total complaints)" based on sum of values
+      const titleEl = group.querySelector('.location-title');
+      if(titleEl){
+        const t = titleEl.textContent || '';
+        const locMatch = t.match(/^([A-Za-z0-9\/\-\s]+?)\s*\(/);
+        const loc = locMatch ? locMatch[1].trim() : null;
+        if(loc){
+          titleEl.textContent = `${loc} (${total} total complaints)`;
+        }
+      }
+
+      // Update bar widths relative to the max value in the location group
+      rows.forEach((r, i)=>{
+        const bar = r.querySelector('.category-bar');
+        const v = values[i] || 0;
+        const w = max > 0 ? (v / max) * 100 : 0;
+        if(bar) bar.style.width = `${clamp(w, 0, 100).toFixed(0)}%`;
+      });
+    });
+  }
+
+  function recalcSentimentCards(){
+    if(!reportRoot) return;
+    const markers = Array.from(reportRoot.querySelectorAll('div'))
+      .filter(d => (d.textContent || '').trim().toLowerCase() === 'sentiment mix');
+
+    markers.forEach(marker=>{
+      const container = marker.closest('td') || marker.parentElement;
+      if(!container) return;
+
+      // Find total number (big 28px number) inside the same card
+      let totalEl = null;
+      const divs = Array.from(container.querySelectorAll('div'));
+      for(const d of divs){
+        const txt = (d.textContent || '').trim();
+        if(!/^\d+$/.test(txt)) continue;
+        const st = (d.getAttribute('style') || '');
+        if(st.includes('28px')){
+          totalEl = d;
+          break;
+        }
+      }
+      const total = totalEl ? toNumber(totalEl.textContent) : 0;
+
+      // Find rows that look like sentiment rows: flex row + bar span + right info block
+      const rows = Array.from(container.querySelectorAll('div'))
+        .filter(d=>{
+          const st = (d.getAttribute('style') || '').toLowerCase().replace(/\s/g,'');
+          if(!(st.includes('display:flex') && st.includes('gap:10px'))) return false;
+          const hasBar = !!d.querySelector('div[style*="overflow:hidden"] span');
+          const hasInfo = !!d.querySelector('div[style*="width:110px"]');
+          return hasBar && hasInfo;
+        });
+
+      rows.forEach(row=>{
+        const barSpan = row.querySelector('div[style*="overflow:hidden"] span');
+        const infoDiv = row.querySelector('div[style*="width:110px"]');
+        if(!infoDiv || !barSpan) return;
+
+        const countSpan = infoDiv.querySelector('span');
+        if(!countSpan) return;
+
+        const currentCount = toNumber(countSpan.textContent);
+        const pm = (infoDiv.textContent || '').match(/(\d+(\.\d+)?)%/);
+        const currentPercent = pm ? Number(pm[1]) : null;
+
+        const prevCount = row.dataset.lastCount ? Number(row.dataset.lastCount) : null;
+        const prevPercent = row.dataset.lastPercent ? Number(row.dataset.lastPercent) : null;
+
+        let source = 'count';
+        if(prevCount !== null && prevPercent !== null){
+          const countChanged = Math.abs(currentCount - prevCount) > 0.0001;
+          const percentChanged = currentPercent !== null && Math.abs(currentPercent - prevPercent) > 0.0001;
+          if(percentChanged && !countChanged) source = 'percent';
+          else source = 'count';
+        }
+
+        let nextCount = currentCount;
+        let nextPercent = currentPercent;
+
+        if(source === 'percent' && currentPercent !== null){
+          nextPercent = clamp(currentPercent, 0, 100);
+          nextCount = total > 0 ? Math.round((nextPercent * total) / 100) : 0;
+        } else {
+          nextCount = currentCount;
+          nextPercent = total > 0 ? (nextCount / total) * 100 : 0;
+        }
+
+        // Write back
+        const cls = countSpan.className || '';
+        infoDiv.innerHTML = `<span class="${cls}">${nextCount}</span> (${clamp(nextPercent,0,100).toFixed(2)}%)`;
+        barSpan.style.width = `${clamp(nextPercent,0,100).toFixed(2)}%`;
+
+        row.dataset.lastCount = String(nextCount);
+        row.dataset.lastPercent = String(Number(clamp(nextPercent,0,100).toFixed(2)));
+      });
+    });
+  }
+
+  
+  function recalcReviewSourceCards(){
+    if(!reportRoot) return;
+    const cards = Array.from(reportRoot.querySelectorAll('table.review-sources-card'));
+    cards.forEach(card=>{
+      const totalEl = card.querySelector('.review-total');
+      const total = totalEl ? toNumber(totalEl.textContent) : 0;
+
+      const rows = Array.from(card.querySelectorAll('div')).filter(row=>{
+        const st = (row.getAttribute('style') || '');
+        if(!st.includes('display:flex')) return false;
+        const barContainer = row.querySelector('div[style*="overflow:hidden"]');
+        const infoDiv = row.querySelector('div[style*="width:120px"]') || row.querySelector('div[style*="width:110px"]') || row.querySelector('div:last-child');
+        if(!barContainer || !infoDiv) return false;
+        const countSpan = infoDiv.querySelector('span');
+        if(!countSpan) return false;
+        // must look like: "123 (45.67%)"
+        return /\(\s*[\d.]+\s*%\s*\)/.test(infoDiv.textContent || '');
+      });
+
+      rows.forEach(row=>{
+        const barContainer = row.querySelector('div[style*="overflow:hidden"]');
+        let barSpan = barContainer ? barContainer.querySelector('span') : null;
+
+        const infoDiv = row.querySelector('div[style*="width:120px"]') || row.querySelector('div[style*="width:110px"]') || row.querySelector('div:last-child');
+        if(!infoDiv) return;
+        const countSpan = infoDiv.querySelector('span');
+        if(!countSpan) return;
+
+        const currentCount = toNumber(countSpan.textContent);
+        const pctMatch = (infoDiv.textContent || '').match(/\(([\d.]+)\s*%\s*\)/);
+        const currentPercent = pctMatch ? Number(pctMatch[1]) : (total > 0 ? (currentCount / total) * 100 : 0);
+
+        const lastCount = row.dataset.lastCount ? toNumber(row.dataset.lastCount) : currentCount;
+        const lastPercent = row.dataset.lastPercent ? Number(row.dataset.lastPercent) : currentPercent;
+
+        const countChanged = currentCount !== lastCount;
+        const percentChanged = Math.abs(currentPercent - lastPercent) > 0.01;
+
+        let nextCount, nextPercent;
+        if(percentChanged && !countChanged){
+          nextPercent = currentPercent;
+          nextCount = total > 0 ? Math.round((nextPercent / 100) * total) : 0;
+        } else {
+          nextCount = currentCount;
+          nextPercent = total > 0 ? (nextCount / total) * 100 : 0;
+        }
+
+        // Write back (keeps the count span class for styling)
+        const cls = countSpan.className || '';
+        infoDiv.innerHTML = `<span class="${cls}">${nextCount}</span> (${clamp(nextPercent,0,100).toFixed(2)}%)`;
+
+        // Ensure bar exists and update width
+        if(barContainer){
+          if(!barSpan){
+            barSpan = document.createElement('span');
+            barSpan.style.display = 'block';
+            barSpan.style.height = '10px';
+
+            const cn = (cls || '').toLowerCase();
+            let bg = '#64748b';
+            if(cn.includes('google')) bg = '#4285F4';
+            else if(cn.includes('yelp')) bg = '#d71616';
+            else if(cn.includes('trustpilot')) bg = '#04da8d';
+            barSpan.style.background = bg;
+
+            barContainer.appendChild(barSpan);
+          }
+          barSpan.style.width = `${clamp(nextPercent,0,100).toFixed(2)}%`;
+        }
+
+        row.dataset.lastCount = String(nextCount);
+        row.dataset.lastPercent = String(Number(clamp(nextPercent,0,100).toFixed(2)));
+      });
+    });
+  }
+
+  // --- Mix bars (Pos / Neg / Neu stacked bars in the metric tables) ---
+  // Reads the colored counts in the cells to the left of the bar, up to the
+  // previous bar or the location cell, and resizes the segments by count.
+  function recalcMixBars(){
+    if(!reportRoot) return;
+    reportRoot.querySelectorAll('div.mix').forEach(mix=>{
+      const cell = mix.closest('td');
+      if(!cell) return;
+      let p = null, n = null, u = null;
+      let td = cell.previousElementSibling;
+      while(td){
+        if(td.querySelector('div.mix')) break;
+        const ps = td.querySelector('.positive'), ns = td.querySelector('.negative'), us = td.querySelector('.neutral');
+        if(ps && p === null) p = toNumber(ps.textContent);
+        if(ns && n === null) n = toNumber(ns.textContent);
+        if(us && u === null) u = toNumber(us.textContent);
+        if(td.classList.contains('loc') || td === td.parentElement.firstElementChild) break;
+        td = td.previousElementSibling;
+      }
+      const vp = Math.max(0, p || 0), vn = Math.max(0, n || 0), vu = Math.max(0, u || 0);
+      const total = vp + vn + vu;
+      const withNeutral = u !== null || !!mix.querySelector('.u');
+      if(total <= 0){ mix.innerHTML = ''; return; }
+      mix.innerHTML = `<span class="p" style="flex-grow:${vp}"></span><span class="n" style="flex-grow:${vn}"></span>` +
+                      (withNeutral ? `<span class="u" style="flex-grow:${vu}"></span>` : '');
+    });
+  }
+
+  // --- Single-value progress bars (dashboard style) ---
+  // The bar takes the nearest percentage to its left; data-scale sets the
+  // value that fills the track (default 100) and data-color="ratio" recolors
+  // the bar and the ratio badge with the 6% / 8% thresholds.
+  function recalcProgressBars(){
+    if(!reportRoot) return;
+    reportRoot.querySelectorAll('.bar-track .bar-fill').forEach(fill=>{
+      const cell = fill.closest('td');
+      const track = fill.parentElement;
+      if(!cell || !track) return;
+      const scale = Number(track.dataset.scale || 100) || 100;
+      let td = cell.previousElementSibling, pct = null, pctCell = null;
+      while(td){
+        const m = (td.textContent || '').match(/-?\d+(\.\d+)?\s*%/);
+        if(m){ pct = parseFloat(m[0]); pctCell = td; break; }
+        td = td.previousElementSibling;
+      }
+      if(pct === null) return;
+      fill.style.width = `${clamp(pct / scale * 100, 0, 100).toFixed(1)}%`;
+      if(track.dataset.color === 'ratio'){
+        const level = pct > 8 ? 'bad' : (pct > 6 ? 'warn' : 'good');
+        fill.style.background = level === 'bad' ? 'var(--red)' : (level === 'warn' ? 'var(--yellow)' : 'var(--green)');
+        const badge = pctCell ? pctCell.querySelector('.badge') : null;
+        if(badge){
+          badge.classList.remove('badge-yes','badge-warn','badge-no');
+          badge.classList.add(level === 'bad' ? 'badge-no' : (level === 'warn' ? 'badge-warn' : 'badge-yes'));
+        }
+        const target = Number(track.dataset.target || 0);
+        const note = cell.querySelector('.bar-note');
+        if(target > 0 && note){
+          note.textContent = `${Math.round(pct / target * 100)}% of target`;
+        }
+      }
+    });
+  }
+
+function recalcAllCharts(){
+    recalcGroupedComplaints();
+    recalcSentimentCards();
+    recalcReviewSourceCards();
+    recalcMixBars();
+    recalcProgressBars();
+  }
+
+  // --- Add/remove helpers ---
+  function addListItem(){
+    if(!selectedLi){
+      toast('Select a list item first.');
+      return;
+    }
+    const ul = selectedLi.parentElement;
+    if(!ul || !/^(UL|OL)$/i.test(ul.tagName)){
+      toast('Selection is not inside a list.');
+      return;
+    }
+    const newLi = selectedLi.cloneNode(true);
+    newLi.classList.remove('selected-li');
+    // Clear content but keep basic structure
+    newLi.innerHTML = 'New item';
+    ul.insertBefore(newLi, selectedLi.nextSibling);
+    setSelectedLi(newLi);
+    toast('List item added.');
+  }
+
+  function deleteListItem(){
+    if(!selectedLi){
+      toast('Select a list item first.');
+      return;
+    }
+    const ul = selectedLi.parentElement;
+    if(!ul || !/^(UL|OL)$/i.test(ul.tagName)){
+      toast('Selection is not inside a list.');
+      return;
+    }
+    const next = selectedLi.nextElementSibling || selectedLi.previousElementSibling;
+    selectedLi.remove();
+    setSelectedLi(next && next.tagName === 'LI' ? next : null);
+    toast('List item deleted.');
+    recalcAllCharts();
+  }
+
+  function isHeaderRow(tr){
+    if(!tr) return true;
+    if(tr.querySelector('th')) return true;
+    const st = (tr.getAttribute('style') || '').toLowerCase();
+    // common header row patterns in the report
+    if(st.includes('font-weight:700')) return true;
+    const t = (tr.textContent || '').toLowerCase();
+    if(t.includes('location') && t.includes('percentage')) return true;
+    if(t.includes('category') && t.includes('cases')) return true;
+    return false;
+  }
+
+  function addTableRow(){
+    if(!selectedRow){
+      toast('Select a table row first.');
+      return;
+    }
+    const table = selectedRow.closest('table');
+    if(!table){
+      toast('Selection is not inside a table.');
+      return;
+    }
+    // Avoid adding rows to the outer layout tables
+    const outer = table.closest('table');
+    // We'll still allow it, but prefer to operate inside tables that have borders/headers.
+    const newTr = selectedRow.cloneNode(true);
+    newTr.classList.remove('selected-row');
+
+    // Clear cells (keep spans if any)
+    const cells = Array.from(newTr.children).filter(c=>/^(TD|TH)$/i.test(c.tagName));
+    cells.forEach(c=>{
+      if(c.querySelector('th')) return;
+      const span = c.querySelector('span');
+      if(span){
+        span.textContent = '0';
+      } else {
+        c.textContent = '';
+      }
+    });
+
+    selectedRow.parentNode.insertBefore(newTr, selectedRow.nextSibling);
+    setSelectedRow(newTr);
+    toast('Row added.');
+    recalcAllCharts();
+  }
+
+  function deleteTableRow(){
+    if(!selectedRow){
+      toast('Select a table row first.');
+      return;
+    }
+    if(isHeaderRow(selectedRow)){
+      toast('Header rows cannot be deleted.');
+      return;
+    }
+    const next = selectedRow.nextElementSibling || selectedRow.previousElementSibling;
+    selectedRow.remove();
+    setSelectedRow(next && next.tagName === 'TR' ? next : null);
+    toast('Row deleted.');
+    recalcAllCharts();
+  }
+
+  // --- Static export ---
+  function downloadStatic(){
+    recalcAllCharts();
+
+    const clone = document.documentElement.cloneNode(true);
+
+    // Remove editor UI + script + toast
+    const tb = clone.querySelector('#editor-toolbar');
+    if(tb) tb.remove();
+    const ts = clone.querySelector('#editor-toast');
+    if(ts) ts.remove();
+    const sc = clone.querySelector('#editor-script');
+    if(sc) sc.remove();
+
+    // Turn off edit mode + remove selection classes
+    clone.querySelectorAll('[contenteditable]').forEach(el=>{
+      el.removeAttribute('contenteditable');
+    });
+    clone.querySelectorAll('.selected-row').forEach(el=>el.classList.remove('selected-row'));
+    clone.querySelectorAll('.selected-li').forEach(el=>el.classList.remove('selected-li'));
+    clone.querySelectorAll('body').forEach(el=>el.classList.remove('edit-mode'));
+
+    // Optional: strip editor CSS by removing the last injected block (we keep it minimal by leaving it; but remove if present)
+    // We'll remove any style blocks that contain "Report Editor UI"
+    clone.querySelectorAll('style').forEach(st=>{
+      if((st.textContent || '').includes('Report Editor UI')){
+        st.textContent = st.textContent.replace(/\/\* ===== Report Editor UI =====[\s\S]*$/m,'');
+      }
+    });
+
+    const doctype = '<!DOCTYPE html>\n';
+    const html = doctype + clone.outerHTML;
+
+    const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    const a = document.createElement('a');
+    const headerTitle = document.querySelector('title') ? document.querySelector('title').textContent.trim() : 'report';
+    const safeName = (headerTitle || 'report').replace(/[^\w\-]+/g,'_').slice(0,60);
+    a.download = safeName + '_static.html';
+    a.href = URL.createObjectURL(blob);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+    toast('Static HTML downloaded.');
+  }
+
+  // --- Wiring ---
+  if(reportRoot){
+    reportRoot.addEventListener('click', (e)=>{
+      const li = e.target.closest('li');
+      const tr = e.target.closest('tr');
+
+      // ignore clicks outside the report
+      if(!reportRoot.contains(e.target)) return;
+
+      if(li){
+        if(selectedRow) setSelectedRow(null);
+        setSelectedLi(li);
+        return;
+      }
+      if(tr){
+        if(selectedLi) setSelectedLi(null);
+        setSelectedRow(tr);
+        return;
+      }
+    });
+
+    let debounceT = null;
+    reportRoot.addEventListener('input', ()=>{
+      clearTimeout(debounceT);
+      debounceT = setTimeout(recalcAllCharts, 150);
+    });
+  }
+
+  const btn = (id)=>document.getElementById(id);
+  if(btn('toggle-edit')) btn('toggle-edit').addEventListener('click', ()=>setEditMode(!editMode));
+  if(btn('recalc')) btn('recalc').addEventListener('click', ()=>{ recalcAllCharts(); toast('Charts recalculated.'); });
+  if(btn('add-item')) btn('add-item').addEventListener('click', addListItem);
+  if(btn('delete-item')) btn('delete-item').addEventListener('click', deleteListItem);
+  if(btn('add-row')) btn('add-row').addEventListener('click', addTableRow);
+  if(btn('delete-row')) btn('delete-row').addEventListener('click', deleteTableRow);
+  if(btn('download-static')) btn('download-static').addEventListener('click', downloadStatic);
+
+  // Init
+  setEditMode(true);
+  recalcAllCharts();
+})();
+</script>
+
+</body>
+</html>
